@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class List extends StatelessWidget {
-  const List({super.key});
+class Incidentes extends StatelessWidget {
+  const Incidentes({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +10,7 @@ class List extends StatelessWidget {
         title: const Text('Second Screen'),
       ),
       body: const Center(
-        child: Text('Welcome to the second screen!'),
+        child: Text('Welcome to the incidentes screen!'),
       ),
     );
   }

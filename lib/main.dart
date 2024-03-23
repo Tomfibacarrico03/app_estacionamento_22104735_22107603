@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'menu.dart';
+import 'parques.dart';
+import 'mapa.dart';
+import 'incidente.dart';
 void main() {
   runApp(const TabBarDemo());
 }
@@ -9,29 +12,35 @@ class TabBarDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Use DefaultTabController to manage tab selection
     return MaterialApp(
       home: DefaultTabController(
-        length: 4,
+        length: 4, // Number of tabs
         child: Scaffold(
           appBar: AppBar(
-            bottom: const TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.directions_car)),
-                Tab(icon: Icon(Icons.directions_transit)),
-                Tab(icon: Icon(Icons.directions_bike)),
-                Tab(icon: Icon(Icons.directions_bike)),
-              ],
-            ),
-            title: const Text('Tabs Demo'),
+            centerTitle: true,
+            title: const Text('PARK4U'),
           ),
           body: const TabBarView(
             children: [
-              Icon(Icons.directions_car),
-              Icon(Icons.directions_transit),
-              Icon(Icons.directions_bike),
-              Icon(Icons.directions_bike)
-
+              MenuPage(),
+              Parques(),
+              Mapa(),
+              Incidentes(),
             ],
+          ),
+          // Move TabBar to bottomNavigationBar
+          bottomNavigationBar: const TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.home_filled, size: 30), text: "Menu"),
+              Tab(icon: Icon(Icons.list, size: 30), text: "Parques"),
+              Tab(icon: Icon(Icons.map, size: 30), text: "Mapa"),
+              Tab(icon: Icon(Icons.error, size: 30), text: "Incidente"),
+            ],
+            // Apply a material design so the TabBar looks appropriate at the bottom
+            labelColor: Colors.lightGreen,
+            unselectedLabelColor: Colors.blueGrey,
+            indicatorSize: TabBarIndicatorSize.label,
           ),
         ),
       ),
