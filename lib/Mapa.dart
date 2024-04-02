@@ -32,7 +32,7 @@ class Mapa extends StatelessWidget {
                 title: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10.0), // Aumente o espaço vertical se necessário.
                   child: Container(
-                    height: 35, // Altura fixa
+                    height: 35,  // Altura fixa
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0), // Espaço ao redor do texto
                     decoration: BoxDecoration(
                       color: Colors.white, // Cor de fundo do retângulo
