@@ -1,4 +1,24 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'estacionamento.dart';
+
+final List<Estacionamento> listaDeParques = [
+  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Ocupado', distancia: 1.5),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Parcialmente', distancia: 2.0),
+  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Livre', distancia: 1.5),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0),
+  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Parcialmente', distancia: 1.5),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0),
+  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Parcialmente', distancia: 1.5),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Parcialmente', distancia: 2.0),
+
+];
+
 
 class Parques extends StatelessWidget {
   const Parques({super.key});
@@ -7,14 +27,17 @@ class Parques extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100.0),
+        preferredSize: const Size.fromHeight(50.0),
         child: AppBar(
           centerTitle: true, // Centraliza o título
           title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0), // Aumente o espaço vertical se necessário.
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            // Aumente o espaço vertical se necessário.
             child: Container(
-              height: 35, // Altura fixa
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0), // Espaço ao redor do texto
+              height: 35,
+              // Altura fixa
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              // Espaço ao redor do texto
               decoration: BoxDecoration(
                 color: Colors.white, // Cor de fundo do retângulo
                 borderRadius: BorderRadius.circular(20), // Bordas arredondadas
@@ -37,9 +60,51 @@ class Parques extends StatelessWidget {
           elevation: 0, // Remove a sombra abaixo da AppBar
         ),
       ),
-      body: const Center(
-        child: Text('Welcome to the second screen!'),
+      body: Scrollbar(
+        thumbVisibility: true, // Define se a barra de rolagem deve ser sempre visível
+        thickness: 6.0, // Define a espessura da barra de rolagem
+        radius: const Radius.circular(10), // Define o raio da borda da barra de rolagem
+
+        child: ListView.builder(
+          itemCount: listaDeParques.length,
+          itemBuilder: (BuildContext context, int index) {
+            final estacionamento = listaDeParques[index];
+            return ListTile(
+              title: Text(estacionamento.nome,style: const TextStyle(
+                color:Color(0xFF00486A))),
+              subtitle: Text(estacionamento.endereco, style: const TextStyle(
+                  color:Color(0xFF00486A))),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text(
+                  estacionamento.ocupado,
+                  style: TextStyle(
+                    color: getColorForStatus(estacionamento.ocupado), // Define a cor baseado no estado de ocupação
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_ios_rounded, color: Color(
+                    0xFF747F98)),
+              ],),
+              leading: Text('${estacionamento.distancia.toStringAsFixed(1)} km', style: const TextStyle(
+                  color:Color(0xFF00486A))),
+            );
+          },
+        ),
       ),
     );
   }
 }
+
+
+  Color getColorForStatus(String status) {
+    switch (status) {
+      case 'Ocupado':
+        return Colors.red;
+      case 'Parcialmente':
+        return Colors.orange;
+      case 'Livre':
+        return Colors.green;
+      default:
+        return Colors.grey; // Cor padrão para status desconhecido
+    }
+  }
