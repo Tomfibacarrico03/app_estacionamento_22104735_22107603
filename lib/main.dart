@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'menu.dart';
 import 'parques.dart';
 import 'Mapa.dart';
-import 'incidente.dart';
-
+import 'registarincidente.dart';
+import 'detalhes.dart';
 void main() {
   runApp(const TabBarDemo());
 }
@@ -95,4 +95,5 @@ class TabBarDemo extends StatelessWidget {
       ),
     ));
   }
+
 }

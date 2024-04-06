@@ -16,11 +16,7 @@ class Mapa extends StatelessWidget {
             ),
           ),
           // O conteúdo do body
-          Positioned.fill(
-            top: MediaQuery.of(context).padding.top + kToolbarHeight, // Deixe espaço para a AppBar
-            child: const Column(
-            ),
-          ),
+
           // A AppBar sobreposta
           Positioned(
             top: 0,

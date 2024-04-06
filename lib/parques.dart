@@ -1,21 +1,22 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'estacionamento.dart';
+import 'classes/estacionamento.dart';
+import 'detalhes.dart';
 
 final List<Estacionamento> listaDeParques = [
-  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Ocupado', distancia: 1.5),
-  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0),
-  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Parcialmente', distancia: 2.0),
-  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Livre', distancia: 1.5),
-  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0),
-  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0),
-  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Parcialmente', distancia: 1.5),
-  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0),
-  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0),
-  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Parcialmente', distancia: 1.5),
-  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0),
-  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Parcialmente', distancia: 2.0),
+  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Ocupado', distancia: 1.5, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Parcialmente', distancia: 2.0, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Livre', distancia: 1.5, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Parcialmente', distancia: 1.5, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Livre', distancia: 2.0, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque da Liberdade', endereco: 'Rua da Liberdade, Lisboa', ocupado: 'Parcialmente', distancia: 1.5, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Ocupado', distancia: 2.0, urlImagem: '', tipo: '', preco: 0.0),
+  Estacionamento(nome: 'Parque do Comércio', endereco: 'Praça do Comércio, Lisboa', ocupado: 'Parcialmente', distancia: 2.0, urlImagem: '', tipo: '', preco: 0.0),
 
 ];
 
@@ -61,50 +62,57 @@ class Parques extends StatelessWidget {
         ),
       ),
       body: Scrollbar(
-        thumbVisibility: true, // Define se a barra de rolagem deve ser sempre visível
-        thickness: 6.0, // Define a espessura da barra de rolagem
-        radius: const Radius.circular(10), // Define o raio da borda da barra de rolagem
-
+        thumbVisibility: true,
+        thickness: 6.0,
+        radius: const Radius.circular(10),
         child: ListView.builder(
           itemCount: listaDeParques.length,
           itemBuilder: (BuildContext context, int index) {
             final estacionamento = listaDeParques[index];
-            return ListTile(
-              title: Text(estacionamento.nome,style: const TextStyle(
-                color:Color(0xFF00486A))),
-              subtitle: Text(estacionamento.endereco, style: const TextStyle(
-                  color:Color(0xFF00486A))),
-              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                Text(
-                  estacionamento.ocupado,
-                  style: TextStyle(
-                    color: getColorForStatus(estacionamento.ocupado), // Define a cor baseado no estado de ocupação
-                    fontWeight: FontWeight.bold,
-                  ),
+            return InkWell(
+              onTap: () {
+                // Navegar para a página de detalhes do estacionamento
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => DetalhesDoParque(parque: estacionamento)),
+                );
+              },
+              child: ListTile(
+                title: Text(estacionamento.nome, style: const TextStyle(color: Color(0xFF00486A))),
+                subtitle: Text(estacionamento.endereco, style: const TextStyle(color: Color(0xFF00486A))),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      estacionamento.ocupado,
+                      style: TextStyle(
+                        color: getColorForStatus(estacionamento.ocupado), // Função para definir a cor com base no estado de ocupação
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: Color(0xFF747F98)),
+                  ],
                 ),
-                const Icon(Icons.arrow_forward_ios_rounded, color: Color(
-                    0xFF747F98)),
-              ],),
-              leading: Text('${estacionamento.distancia.toStringAsFixed(1)} km', style: const TextStyle(
-                  color:Color(0xFF00486A))),
+                leading: Text('${estacionamento.distancia.toStringAsFixed(1)} km', style: const TextStyle(color: Color(0xFF00486A))),
+              ),
             );
           },
         ),
       ),
+
     );
   }
 }
 
 
-  Color getColorForStatus(String status) {
-    switch (status) {
-      case 'Ocupado':
-        return Colors.red;
-      case 'Parcialmente':
-        return Colors.orange;
-      case 'Livre':
-        return Colors.green;
-      default:
-        return Colors.grey; // Cor padrão para status desconhecido
-    }
+Color getColorForStatus(String status) {
+  switch (status) {
+    case 'Ocupado':
+      return Colors.red;
+    case 'Parcialmente':
+      return Colors.orange;
+    case 'Livre':
+      return Colors.green;
+    default:
+      return Colors.grey; // Cor padrão para status desconhecido
   }
+}
