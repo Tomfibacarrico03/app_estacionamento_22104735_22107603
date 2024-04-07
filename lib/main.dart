@@ -55,7 +55,7 @@ class TabBarDemo extends StatelessWidget {
             ),
           ),
         ),
-        body: const TabBarView(
+        body:  TabBarView(
           children: [
             MenuPage(),
             Parques(),
