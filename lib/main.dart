@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'menu.dart';
 import 'parques.dart';
@@ -55,7 +54,7 @@ class TabBarDemo extends StatelessWidget {
             ),
           ),
         ),
-        body:  TabBarView(
+        body:  const TabBarView(
           children: [
             MenuPage(),
             Parques(),

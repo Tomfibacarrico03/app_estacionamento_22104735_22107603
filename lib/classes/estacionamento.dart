@@ -14,6 +14,10 @@ class Estacionamento {
   addIncidente(Incidente incidente){
     incidentes.add(incidente);
   }
+
+  getIncidentes(){
+    return incidentes;
+  }
 }
 
 

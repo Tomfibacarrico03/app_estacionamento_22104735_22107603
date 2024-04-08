@@ -4,6 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'classes/estacionamento.dart';
+import 'registarincidente.dart';
+import 'ListaDeIncidentes.dart';
+
+
 
 class DetalhesDoParque extends StatelessWidget {
   final Estacionamento parque;
@@ -188,23 +192,23 @@ class DetalhesDoParque extends StatelessWidget {
               children: <Widget>[
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF00486A), // Cor de fundo do botão
+                    backgroundColor: const Color(0xFF00486A), // Cor de fundo do botão
                     // Outras personalizações podem ser aplicadas aqui
                   ),
                   onPressed: () {
-                    // Ação para registrar incidente
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const Incidentes()),);
                   },
                   child: const Text('Registrar Incidente',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600),),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:  Color(0xFF00486A), // Cor de fundo do botão
+                    backgroundColor:  const Color(0xFF00486A), // Cor de fundo do botão
                     // Outros personalizações podem ser aplicadas aqui
                   ),
                   onPressed: () {
-                    // Ação para avaliar o parque
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ListaIncidentesPage(incidentes: parque.incidentes)),);
                   },
-                  child: Text('Ver incidentes',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600)),
+                  child: const Text('Ver incidentes',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600)),
                 ),
               ],
             ),
