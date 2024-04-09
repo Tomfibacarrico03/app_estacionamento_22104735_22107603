@@ -1,16 +1,32 @@
-import 'package:app_estacionamento_22104735_22107603/classes/estacionamento.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'parques.dart';
 import 'classes/estacionamento.dart';
+import 'classes/dropDown.dart';
+import 'globals.dart';
 
 // For input formatters if needed
 
-class Incidentes extends StatelessWidget {
-  const Incidentes({super.key});
 
+class RegistarIncidentes extends StatefulWidget {
+  const RegistarIncidentes({super.key});
 
   @override
+  _formIncidente createState() => _formIncidente();
+
+}
+
+class _formIncidente extends State<RegistarIncidentes>{
+  Estacionamento? estacionamentoSelecionado;
+  final _formKey = GlobalKey<FormState>();
+  final _formData = TextEditingController();
+  final _formHora = TextEditingController();
+  final _formDescricao = TextEditingController();
+  final _formGravidade = TextEditingController();
+  final _formFoto = TextEditingController();
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +64,39 @@ class Incidentes extends StatelessWidget {
           elevation: 0, // Remove a sombra abaixo da AppBar
         ),
       ),
-
-
+      body: Padding(
+        padding: const EdgeInsets.all(36.0),
+        child: Column(
+          children: [
+            DropdownButtonFormField<Estacionamento>(
+              icon: const Icon(Icons.keyboard_arrow_down_rounded),
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(40),
+                  borderSide: const BorderSide(color: Colors.black, width: 2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(40),
+                  borderSide: const BorderSide(color: Colors.lightGreen, width: 3),
+                ),
+              ),
+              value: estacionamentoSelecionado,
+              hint: const Text("Escolha um estacionamento"),
+              onChanged: (Estacionamento? newValue) {
+                setState(() {
+                  estacionamentoSelecionado = newValue;
+                });
+              },
+              items: listaDeParques.map<DropdownMenuItem<Estacionamento>>((Estacionamento estacionamento) {
+                return DropdownMenuItem<Estacionamento>(
+                  value: estacionamento,
+                  child: Text(estacionamento.endereco),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

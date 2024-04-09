@@ -59,7 +59,7 @@ class TabBarDemo extends StatelessWidget {
             MenuPage(),
             Parques(),
             Mapa(),
-            Incidentes(),
+            RegistarIncidentes(),
           ],
         ),
         // Move TabBar to bottomNavigationBar+

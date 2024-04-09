@@ -161,7 +161,7 @@ class DetalhesDoParque extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    parque.ocupado,
+                    parque.getOcupacao(),
                     style: const TextStyle(
                         color: Color(0xff696969),
                         fontSize: 16,
@@ -196,7 +196,7 @@ class DetalhesDoParque extends StatelessWidget {
                     // Outras personalizações podem ser aplicadas aqui
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const Incidentes()),);
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const RegistarIncidentes()),);
                   },
                   child: const Text('Registrar Incidente',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600),),
                 ),

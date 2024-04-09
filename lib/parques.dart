@@ -62,16 +62,17 @@ class Parques extends StatelessWidget {
                 );
               },
               child: ListTile(
+
                 title: Text(estacionamento.nome, style: const TextStyle(color: Color(0xFF00486A))),
                 subtitle: Text(estacionamento.endereco, style: const TextStyle(color: Color(0xFF00486A))),
-                trailing: Row(
+                trailing:  Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      estacionamento.ocupado,
-                      style: TextStyle(
-                        color: getColorForStatus(estacionamento.ocupado), // Função para definir a cor com base no estado de ocupação
+                      estacionamento.getOcupacao(),
+                      style:  TextStyle(
                         fontWeight: FontWeight.bold,
+                        color : getColorForStatus(estacionamento),
                       ),
                     ),
                     const Icon(Icons.arrow_forward_ios_rounded, color: Color(0xFF747F98)),
@@ -89,15 +90,21 @@ class Parques extends StatelessWidget {
 }
 
 
-Color getColorForStatus(String status) {
-  switch (status) {
-    case 'Ocupado':
-      return Colors.red;
-    case 'Parcialmente':
-      return Colors.orange;
-    case 'Livre':
-      return Colors.green;
-    default:
-      return Colors.grey; // Cor padrão para status desconhecido
+Color getColorForStatus(Estacionamento parque) {
+  // Verifica se a ocupação atual é igual ao máximo de ocupação
+  if (parque.atualOcupacao == parque.maximoOcupacao) {
+    return Colors.red;
+  }
+  // Verifica se a ocupação atual é maior ou igual à metade da máxima ocupação
+  else if (parque.atualOcupacao! >= parque.maximoOcupacao! / 2) {
+    return Colors.orange;
+  }
+  // Verifica se a ocupação atual é menor que a metade da máxima ocupação
+  else if (parque.atualOcupacao! < parque.maximoOcupacao! / 2) {
+    return Colors.green;
+  }
+  // Retorna uma cor padrão para qualquer outro caso não contemplado acima
+  else {
+    return Colors.grey;
   }
 }
