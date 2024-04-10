@@ -2,33 +2,45 @@ import 'incidente.dart';
 import 'package:flutter/material.dart';
 
 class Estacionamento {
-  final String urlImagem;
+  final String imagem;
   final String nome;
   final String endereco;
   final int? maximoOcupacao;
-  final  int?  atualOcupacao;
+  final int? atualOcupacao;
   final String tipo;
   final double distancia;
   final double preco;
-  late List<Incidente> incidentes;
+  List<Incidente> incidentes = [];
 
-  Estacionamento({required this.urlImagem,required this.nome, required this.endereco, required this.maximoOcupacao,required this.atualOcupacao,required this.tipo, required this.distancia, required this.preco});
+  Estacionamento(
+      {required this.imagem,
+      required this.nome,
+      required this.endereco,
+      required this.maximoOcupacao,
+      required this.atualOcupacao,
+      required this.tipo,
+      required this.distancia,
+      required this.preco}
+      );
 
-  addIncidente(Incidente incidente){
-    incidentes.add(incidente);
+  bool addIncidente(Incidente incidente) {
+    try {
+      incidentes.add(incidente);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  getIncidentes(){
+  getIncidentes() {
     return incidentes;
   }
 
-  getMaximo(){
+  getMaximo() {
     return atualOcupacao.toString();
   }
 
-  getOcupacao(){
+  getOcupacao() {
     return '$atualOcupacao / $maximoOcupacao';
   }
 }
-
-

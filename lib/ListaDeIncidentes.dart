@@ -51,6 +51,42 @@ class ListaIncidentesPage extends StatelessWidget {
           ),
         ),
       ),
+      body: Scrollbar(
+        thumbVisibility: true,
+        thickness: 6.0,
+        radius: const Radius.circular(10),
+        child: ListView.builder(
+          itemCount: incidentes.length,
+          itemBuilder: (BuildContext context, int index) {
+            final incidente = incidentes[index];
+            return InkWell(
+              onTap: () {
+                //Navigator.of(context).push(
+                //  MaterialPageRoute(builder: (context) => DetalhesDoParque(parque: estacionamento)),
+                //);
+              },
+              child: ListTile(
+
+                title: Text(incidente.data.toString(), style: const TextStyle(color: Color(0xFF00486A))),
+                subtitle: Text(incidente.hora.toString(), style: const TextStyle(color: Color(0xFF00486A))),
+                trailing:  Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      incidente.gravidade.toString(),
+                      style:  TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: Color(0xFF747F98)),
+                  ],
+                ),
+                leading: Text(incidente.descricao, style: const TextStyle(color: Color(0xFF00486A))),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

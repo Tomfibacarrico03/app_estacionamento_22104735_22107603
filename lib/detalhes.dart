@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'classes/estacionamento.dart';
+import 'main.dart';
 import 'registarincidente.dart';
 import 'ListaDeIncidentes.dart';
 
@@ -13,6 +14,7 @@ class DetalhesDoParque extends StatelessWidget {
   final Estacionamento parque;
 
   const DetalhesDoParque({Key? key, required this.parque}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +103,7 @@ class DetalhesDoParque extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0,30.0,0,10.0),
-                    child: Image.network(parque.urlImagem),
+                    child: Image.asset(parque.imagem, fit:BoxFit.fitWidth),
                   ),
                   // Imagem do estacionamento
                   Center(
@@ -192,13 +194,20 @@ class DetalhesDoParque extends StatelessWidget {
               children: <Widget>[
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00486A), // Cor de fundo do botão
-                    // Outras personalizações podem ser aplicadas aqui
+                    backgroundColor: const Color(0xFF00486A),
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const RegistarIncidentes()),);
+                    // Volta para a tela principal
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    // Abre a tela principal com o índice da aba desejada
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => TabBarDemo(initialIndex: 3), // Índice da aba "Registrar Incidente"
+                    ));
                   },
-                  child: const Text('Registrar Incidente',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600),),
+                  child: const Text(
+                    'Registrar Incidente',
+                    style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -206,7 +215,7 @@ class DetalhesDoParque extends StatelessWidget {
                     // Outros personalizações podem ser aplicadas aqui
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ListaIncidentesPage(incidentes: parque.incidentes)),);
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ListaIncidentesPage(incidentes: parque.getIncidentes())),);
                   },
                   child: const Text('Ver incidentes',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600)),
                 ),
