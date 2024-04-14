@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'classes/incidente.dart';
+import 'detalhes.dart';
 import 'parques.dart';
 import 'classes/estacionamento.dart';
 import 'classes/dropDown.dart';
@@ -10,13 +11,19 @@ import 'globals.dart';
 // For input formatters if needed
 
 class RegistarIncidentes extends StatefulWidget {
-  const RegistarIncidentes({super.key});
+  final Estacionamento? parque;
+
+  const RegistarIncidentes({super.key, this.parque});
 
   @override
-  _formIncidente createState() => _formIncidente();
+  _formIncidente createState() => _formIncidente(parque: parque);
 }
 
 class _formIncidente extends State<RegistarIncidentes> {
+  final Estacionamento? parque;
+  _formIncidente({this.parque}) {
+    estacionamentoSelecionado = this.parque;
+  }
   Estacionamento? estacionamentoSelecionado;
   final _formData = TextEditingController();
   final _formHora = TextEditingController();
@@ -25,8 +32,6 @@ class _formIncidente extends State<RegistarIncidentes> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   double severity = 1;
-
-
 
   void verificarCamposEPreencherIncidente() {
     // Verifica se algum dos campos está vazio ou não selecionado
@@ -37,7 +42,8 @@ class _formIncidente extends State<RegistarIncidentes> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text("Campos obrigatórios"),
-            content: const Text("Por favor, preencha todos os campos para registrar o incidente."),
+            content: const Text(
+                "Por favor, preencha todos os campos para registrar o incidente."),
             actions: <Widget>[
               TextButton(
                 child: const Text("OK"),
@@ -50,6 +56,12 @@ class _formIncidente extends State<RegistarIncidentes> {
         },
       );
     } else {
+      estacionamentoSelecionado!.addIncidente(Incidente(
+        data: selectedDate,
+        hora: selectedTime,
+        descricao: descricao,
+        gravidade: severity,
+      ));
       // Aqui você adiciona o incidente ao estacionamento selecionado
       // Supondo que o método addIncidente esteja corretamente implementado
       showDialog(
@@ -62,42 +74,38 @@ class _formIncidente extends State<RegistarIncidentes> {
               TextButton(
                 child: const Text("OK"),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DetalhesDoParque(parque: estacionamentoSelecionado!)));
+
                 },
               ),
             ],
           );
         },
-
       );
-      bool? addState=estacionamentoSelecionado?.addIncidente(Incidente(
-        data: selectedDate,
-        hora: selectedTime,
-        descricao: descricao,
-        gravidade: severity,
-      ));
-      print(addState);
+
+
       // Pode adicionar um feedback de sucesso aqui, se necessário.
     }
   }
+
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
       barrierLabel: "Selecione as horas",
       context: context,
       initialTime:
-      TimeOfDay(hour: selectedDate.hour, minute: selectedDate.minute),
+          TimeOfDay(hour: selectedDate.hour, minute: selectedDate.minute),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
             primaryColor:
-            const Color(0xFF00486A), // Cor de fundo da barra de cabeçalho
+                const Color(0xFF00486A), // Cor de fundo da barra de cabeçalho
             hintColor: const Color(0xFF00486A), // Cor do botão 'OK'
             colorScheme: const ColorScheme.light(
                 primary:
-                Color(0xFF00486A)), // Cor de fundo do header e botão 'OK'
+                    Color(0xFF00486A)), // Cor de fundo do header e botão 'OK'
             buttonTheme: const ButtonThemeData(
                 textTheme:
-                ButtonTextTheme.primary), // Cor do texto do botão 'OK'
+                    ButtonTextTheme.primary), // Cor do texto do botão 'OK'
             dialogBackgroundColor: Colors.white, // Cor de fundo do DatePicker
           ),
           child: child!,
@@ -129,14 +137,14 @@ class _formIncidente extends State<RegistarIncidentes> {
         return Theme(
           data: ThemeData.light().copyWith(
             primaryColor:
-            const Color(0xFF00486A), // Cor de fundo da barra de cabeçalho
+                const Color(0xFF00486A), // Cor de fundo da barra de cabeçalho
             hintColor: const Color(0xFF00486A), // Cor do botão 'OK'
             colorScheme: const ColorScheme.light(
                 primary:
-                Color(0xFF00486A)), // Cor de fundo do header e botão 'OK'
+                    Color(0xFF00486A)), // Cor de fundo do header e botão 'OK'
             buttonTheme: const ButtonThemeData(
                 textTheme:
-                ButtonTextTheme.primary), // Cor do texto do botão 'OK'
+                    ButtonTextTheme.primary), // Cor do texto do botão 'OK'
             dialogBackgroundColor: Colors.white, // Cor de fundo do DatePicker
           ),
           child: child!,
@@ -172,8 +180,6 @@ class _formIncidente extends State<RegistarIncidentes> {
   @override
   Widget build(BuildContext context) {
     final values = [1, 2, 3, 4, 5];
-
-
 
     return Scaffold(
       appBar: PreferredSize(
@@ -225,7 +231,7 @@ class _formIncidente extends State<RegistarIncidentes> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(40),
                     borderSide:
-                    const BorderSide(color: Colors.lightGreen, width: 3),
+                        const BorderSide(color: Colors.lightGreen, width: 3),
                   ),
                 ),
                 value: estacionamentoSelecionado,
@@ -236,12 +242,12 @@ class _formIncidente extends State<RegistarIncidentes> {
                   });
                 },
                 items: listaDeParques.map<DropdownMenuItem<Estacionamento>>(
-                        (Estacionamento estacionamento) {
-                      return DropdownMenuItem<Estacionamento>(
-                        value: estacionamento,
-                        child: Text(estacionamento.nome),
-                      );
-                    }).toList(),
+                    (Estacionamento estacionamento) {
+                  return DropdownMenuItem<Estacionamento>(
+                    value: estacionamento,
+                    child: Text(estacionamento.nome),
+                  );
+                }).toList(),
               ),
               const SizedBox(height: 30),
               TextFormField(
@@ -280,14 +286,14 @@ class _formIncidente extends State<RegistarIncidentes> {
               const SizedBox(height: 30),
               TextFormField(
                 controller: _formDescricao,
-                  decoration: InputDecoration(
+                decoration: InputDecoration(
                     hintText: "Descrição",
                     border: OutlineInputBorder(
                       // Bordas do campo de texto
                       borderRadius: BorderRadius.circular(40.0),
                     ),
                     icon: const Icon(Icons.description)),
-                onChanged:(value){
+                onChanged: (value) {
                   setState(() {
                     descricao = value;
                   });
@@ -316,26 +322,30 @@ class _formIncidente extends State<RegistarIncidentes> {
                   children: values
                       .map(
                         (e) => Text(
-                      e.toString(), // Aqui você pode usar sua função gravidadeText para converter o valor, se necessário
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  )
+                          e.toString(), // Aqui você pode usar sua função gravidadeText para converter o valor, se necessário
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00486A), // Cor de fundo do botão
+                  backgroundColor:
+                      const Color(0xFF00486A), // Cor de fundo do botão
                   // Outras personalizações podem ser aplicadas aqui
                 ),
-                onPressed:verificarCamposEPreencherIncidente,
-                child: const Text('Registrar Incidente',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600),),
+                onPressed: verificarCamposEPreencherIncidente,
+                child: const Text(
+                  'Registrar Incidente',
+                  style: TextStyle(
+                      color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
+                ),
               ),
             ],
           ),
         ),
-
       ),
     );
   }

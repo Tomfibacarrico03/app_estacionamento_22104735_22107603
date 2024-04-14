@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:app_estacionamento_22104735_22107603/classes/estacionamento.dart';
 import 'package:flutter/material.dart';
 import 'menu.dart';
 import 'parques.dart';
@@ -13,7 +14,8 @@ void main() {
 
 class TabBarDemo extends StatelessWidget {
   final int initialIndex;
-  const TabBarDemo({super.key, this.initialIndex = 0});
+  final Estacionamento? registarIncidenteParque;
+  const TabBarDemo({super.key, this.initialIndex = 0,this.registarIncidenteParque});
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +64,12 @@ class TabBarDemo extends StatelessWidget {
             ),
           ),
         ),
-        body: const TabBarView(
+        body:  TabBarView(
           children: [
             MenuPage(),
             Parques(),
             Mapa(),
-            RegistarIncidentes(),
+            RegistarIncidentes(parque: registarIncidenteParque,),
           ],
         ),
         // Move TabBar to bottomNavigationBar+
@@ -82,7 +84,7 @@ class TabBarDemo extends StatelessWidget {
               color: Color(0xFF00486A),
               child: TabBar(
                 tabs: [
-                  Tab(icon: Icon(Icons.home_filled, size: 40), text: "Menu"),
+                  Tab(icon: Icon(Icons.dashboard, size: 40), text: "Dashboard"),
                   Tab(icon: Icon(Icons.list, size: 40), text: "Parques"),
                   Tab(icon: Icon(Icons.map, size: 40), text: "Mapa"),
                   Tab(icon: Icon(Icons.error, size: 40), text: "Incidente"),

@@ -99,7 +99,7 @@ class DetalhesDoParque extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0,30.0,0,10.0),
@@ -142,7 +142,7 @@ class DetalhesDoParque extends StatelessWidget {
                         fontWeight: FontWeight.w600),
                   ),
                   const Text(
-                    'Preço:',
+                    'Preço',
                     style: TextStyle(
                         color: Color(0xFF00486A),
                         fontSize: 20,
@@ -183,14 +183,29 @@ class DetalhesDoParque extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w600),
                   ),
+                  const Text(
+                    'Número de Incidentes',
+                    style: TextStyle(
+                        color: Color(0xFF00486A),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    parque.incidentes.length.toString(),
+                    style: const TextStyle(
+                        color: Color(0xff696969),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
                   // ... outros detalhes
                 ],
               ),
             ),
             // Botões para ações
+            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment
-                  .spaceEvenly, // Distribui os botões uniformemente na linha
+                  .spaceAround, // Distribui os botões uniformemente na linha
               children: <Widget>[
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -201,7 +216,7 @@ class DetalhesDoParque extends StatelessWidget {
                     Navigator.of(context).popUntil((route) => route.isFirst);
                     // Abre a tela principal com o índice da aba desejada
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => TabBarDemo(initialIndex: 3), // Índice da aba "Registrar Incidente"
+                      builder: (context) => TabBarDemo(initialIndex: 3,registarIncidenteParque: parque), // Índice da aba "Registrar Incidente"
                     ));
                   },
                   child: const Text(
@@ -209,16 +224,16 @@ class DetalhesDoParque extends StatelessWidget {
                     style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
                   ),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:  const Color(0xFF00486A), // Cor de fundo do botão
-                    // Outros personalizações podem ser aplicadas aqui
+                if (parque.incidentes.length > 0)
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:  const Color(0xFF00486A),
+                    ),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ListaIncidentesPage(incidentes: parque.incidentes)));
+                    },
+                    child: const Text('Ver incidentes',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600)),
                   ),
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> ListaIncidentesPage(incidentes: parque.getIncidentes())),);
-                  },
-                  child: const Text('Ver incidentes',style: TextStyle(color: Color(0xFFFFFFFF),fontWeight: FontWeight.w600)),
-                ),
               ],
             ),
           ],
