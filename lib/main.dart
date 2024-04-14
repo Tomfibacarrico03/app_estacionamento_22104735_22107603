@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:app_estacionamento_22104735_22107603/classes/estacionamento.dart';
 import 'package:flutter/material.dart';
-import 'menu.dart';
+import 'dashboard.dart';
 import 'parques.dart';
 import 'Mapa.dart';
 import 'registarincidente.dart';
@@ -66,9 +66,9 @@ class TabBarDemo extends StatelessWidget {
         ),
         body:  TabBarView(
           children: [
-            MenuPage(),
-            Parques(),
-            Mapa(),
+            const DashBoard(),
+            const Parques(),
+            const Mapa(),
             RegistarIncidentes(parque: registarIncidenteParque,),
           ],
         ),

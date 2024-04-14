@@ -58,6 +58,7 @@ class DetalhesDoParque extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
+    child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -102,7 +103,7 @@ class DetalhesDoParque extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0,30.0,0,10.0),
+                    padding: const EdgeInsets.fromLTRB(0,10.0,0,10.0),
                     child: Image.asset(parque.imagem, fit:BoxFit.fitWidth),
                   ),
                   // Imagem do estacionamento
@@ -224,7 +225,7 @@ class DetalhesDoParque extends StatelessWidget {
                     style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
                   ),
                 ),
-                if (parque.incidentes.length > 0)
+                if (parque.incidentes.isNotEmpty)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor:  const Color(0xFF00486A),
@@ -238,6 +239,7 @@ class DetalhesDoParque extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

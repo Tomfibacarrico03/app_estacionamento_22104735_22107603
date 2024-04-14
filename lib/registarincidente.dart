@@ -62,8 +62,6 @@ class _formIncidente extends State<RegistarIncidentes> {
         descricao: descricao,
         gravidade: severity,
       ));
-      // Aqui você adiciona o incidente ao estacionamento selecionado
-      // Supondo que o método addIncidente esteja corretamente implementado
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -84,7 +82,6 @@ class _formIncidente extends State<RegistarIncidentes> {
       );
 
 
-      // Pode adicionar um feedback de sucesso aqui, se necessário.
     }
   }
 
