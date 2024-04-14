@@ -72,6 +72,7 @@ class _formIncidente extends State<RegistarIncidentes> {
               TextButton(
                 child: const Text("OK"),
                 onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog first
                   Navigator.push(context, MaterialPageRoute(builder: (context) => DetalhesDoParque(parque: estacionamentoSelecionado!)));
 
                 },

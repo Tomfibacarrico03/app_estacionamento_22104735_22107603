@@ -78,21 +78,6 @@ class _DashBoardState extends State<DashBoard> {
                 elevation: 0,
               ),
               const SizedBox(height: 10),
-              TextFormField(
-                controller: parque,
-                onChanged: filterSearch,
-                decoration: InputDecoration(
-                  prefixIcon:
-                  const Icon(Icons.search, color: Colors.blueGrey, size: 26),
-                  labelText: "Pesquisa aqui o teu parque",
-                  labelStyle: const TextStyle(color: Colors.blueGrey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50.0),
-                    borderSide: const BorderSide(),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
               if (parkWithMostIncidents != null)
                 Card(
                   shape: RoundedRectangleBorder(
@@ -123,25 +108,6 @@ class _DashBoardState extends State<DashBoard> {
                       fontWeight: FontWeight.bold, // Bold text for emphasis
                       fontSize: 16.5, // Font size for title
                     ),),
-                ),
-              if (showSearchResults)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredList.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(filteredList[index].nome),
-                        subtitle: Text(filteredList[index].endereco),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  DetalhesDoParque(parque: filteredList[index])),
-                        ),
-                      );
-                    },
-
-                  ),
                 ),
               const SizedBox(height: 10),
 
