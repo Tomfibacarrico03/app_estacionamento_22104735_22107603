@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'classes/incidente.dart';
+import '../classes/incidente.dart';
 import 'detalhes.dart';
 import 'parques.dart';
-import 'classes/estacionamento.dart';
-import 'classes/dropDown.dart';
+import '../classes/estacionamento.dart';
+import '../classes/dropDown.dart';
 import 'package:intl/intl.dart';
-import 'globals.dart';
+import '../globals.dart';
 
 // For input formatters if needed
 
