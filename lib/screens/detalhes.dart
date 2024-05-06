@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'classes/estacionamento.dart';
-import 'main.dart';
+import '../classes/estacionamento.dart';
+import '../main.dart';
 import 'registarincidente.dart';
 import 'ListaDeIncidentes.dart';
 
