@@ -81,8 +81,6 @@ class _formIncidente extends State<RegistarIncidentes> {
           );
         },
       );
-
-
     }
   }
 
