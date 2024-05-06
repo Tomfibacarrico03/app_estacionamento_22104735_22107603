@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'classes/estacionamento.dart';
-import 'classes/incidente.dart';
+import '../classes/estacionamento.dart';
+import '../classes/incidente.dart';
 import 'parques.dart';
 import 'package:intl/intl.dart'; // Make sure to import intl package for DateFormat
 

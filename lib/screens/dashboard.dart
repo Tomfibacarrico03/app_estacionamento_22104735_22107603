@@ -1,7 +1,7 @@
-import 'package:app_estacionamento_22104735_22107603/detalhes.dart';
+import 'package:app_estacionamento_22104735_22107603/screens/detalhes.dart';
 import 'package:flutter/material.dart';
 import 'package:app_estacionamento_22104735_22107603/globals.dart';
-import 'classes/estacionamento.dart';
+import '../classes/estacionamento.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);

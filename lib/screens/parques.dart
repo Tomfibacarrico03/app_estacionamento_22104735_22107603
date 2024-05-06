@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'classes/estacionamento.dart';
+import '../classes/estacionamento.dart';
 import 'detalhes.dart';
-import 'globals.dart';
+import '../globals.dart';
 
 
 
