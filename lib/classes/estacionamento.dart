@@ -11,7 +11,6 @@ class Estacionamento {
   final double distancia;
   final double preco;
   List<Incidente> incidentes = [];
-
   Estacionamento(
       {required this.imagem,
       required this.nome,
