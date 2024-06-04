@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../classes/estacionamento.dart';
+import '../classes/gravidade.dart';
 import '../classes/incidente.dart';
 import 'parques.dart';
 import 'package:intl/intl.dart'; // Make sure to import intl package for DateFormat
@@ -47,7 +48,7 @@ class ListaIncidentesPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.warning),
-                  title: Text('Gravidade: ${gravidadeText(incidente.gravidade)}'),
+                  title: Text('Gravidade: ${(incidente.gravidade)}'),
                   trailing: Icon(
                     Icons.circle,
                     color: getSeverityColor(incidente.gravidade),
@@ -192,14 +193,5 @@ class ListaIncidentesPage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-Color getSeverityColor(double severity) {
-  if (severity <= 2) {
-    return Colors.green;
-  } else if (severity <= 4) {
-    return Colors.orange;
-  } else {
-    return Colors.red;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../classes/incidente.dart';
@@ -7,6 +9,7 @@ import '../classes/estacionamento.dart';
 import '../classes/dropDown.dart';
 import 'package:intl/intl.dart';
 import '../globals.dart';
+import '../classes/gravidade.dart';
 
 // For input formatters if needed
 
@@ -60,7 +63,7 @@ class _formIncidente extends State<RegistarIncidentes> {
         data: selectedDate,
         hora: selectedTime,
         descricao: descricao,
-        gravidade: severity,
+        gravidade: Gravidade.SemGravidade,
       ));
       showDialog(
         context: context,
@@ -110,16 +113,18 @@ class _formIncidente extends State<RegistarIncidentes> {
     );
 
     if (pickedTime != null) {
-      setState(() {
-        selectedDate = DateTime(
-          selectedDate.year,
-          selectedDate.month,
-          selectedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        _formHora.text = DateFormat('HH:mm').format(selectedDate);
-      });
+      if((selectedDate.day == DateTime.now().day && (pickedTime.hour < TimeOfDay.now().hour || (pickedTime.hour == TimeOfDay.now().hour && pickedTime.minute <= TimeOfDay.now().minute)))|| selectedDate.day < DateTime.now().day ){
+        setState(() {
+          selectedDate = DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+          _formHora.text = DateFormat('HH:mm').format(selectedDate);
+        });
+      }
     }
   }
 
@@ -149,10 +154,12 @@ class _formIncidente extends State<RegistarIncidentes> {
     );
 
     if (pickedDate != null && pickedDate != selectedDate) {
+      if(pickedDate.year == DateTime.now().year && pickedDate.month == DateTime.now().month && pickedDate.day <= DateTime.now().day || ( pickedDate.year == DateTime.now().year && pickedDate.month == DateTime.now().month && pickedDate.day == DateTime.now().day && pickedDate.hour < DateTime.now().hour)){
       setState(() {
         selectedDate = pickedDate;
         _formData.text = DateFormat('dd/MM/yyyy').format(selectedDate);
       });
+    }
     }
   }
 
@@ -297,6 +304,7 @@ class _formIncidente extends State<RegistarIncidentes> {
               ),
               const SizedBox(height: 30),
               Text('Gravidade', style: Theme.of(context).textTheme.subtitle1),
+              const Text('Sem gravidade - Extremamente grave'),
               Slider(
                 value: severity,
                 min: 1,
@@ -308,7 +316,7 @@ class _formIncidente extends State<RegistarIncidentes> {
                     severity = value;
                   });
                 },
-                thumbColor: Colors.lightGreen,
+                thumbColor: const Color(0xC37C4AFF),
                 activeColor: const Color(0xFF00486A),
               ),
               Padding(
