@@ -4,12 +4,27 @@ import 'package:flutter/material.dart';
 import '../classes/estacionamento.dart';
 import 'detalhes.dart';
 import '../globals.dart';
+import 'package:app_estacionamento_22104735_22107603/repository/estacionamento_repository.dart';
 
 
+class ParquesPage extends StatefulWidget {
+  @override
+  Parques createState() => Parques();
+}
 
-class Parques extends StatelessWidget {
-  const Parques({super.key});
+class Parques extends State<ParquesPage> {
+  Parques({super.key});
+  final EstacionamentosRepository estacionamentosRepository = EstacionamentosRepository();
 
+  Future<void> loadData() async {
+    try {
+      listaDeParques = await estacionamentosRepository.fetchEstacionamentos();
+      setState(() {});
+    } catch (e) {
+      listaDeParques = await estacionamentosRepository.loadEstacionamentosFromLocalStorage();
+      setState(() {});
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +101,8 @@ class Parques extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 
