@@ -13,18 +13,7 @@ class ParquesPage extends StatefulWidget {
 }
 
 class Parques extends State<ParquesPage> {
-  Parques({super.key});
-  final EstacionamentosRepository estacionamentosRepository = EstacionamentosRepository();
 
-  Future<void> loadData() async {
-    try {
-      listaDeParques = await estacionamentosRepository.fetchEstacionamentos();
-      setState(() {});
-    } catch (e) {
-      listaDeParques = await estacionamentosRepository.loadEstacionamentosFromLocalStorage();
-      setState(() {});
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

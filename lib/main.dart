@@ -1,15 +1,20 @@
-import 'dart:ui';
 
 import 'package:app_estacionamento_22104735_22107603/classes/estacionamento.dart';
+import 'package:app_estacionamento_22104735_22107603/http/http_client.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'screens/dashboard.dart';
 import 'screens/parques.dart';
 import 'screens/Mapa.dart';
 import 'screens/registarincidente.dart';
 import 'screens/detalhes.dart';
+import 'repository/estacionamento_repository.dart';
 
 void main() {
-  runApp(const TabBarDemo());
+  runApp(Provider(
+    create: (_) => EstacionamentosRepository(client: HttpClient()),
+      child: const TabBarDemo(),
+  ));
 }
 
 class TabBarDemo extends StatelessWidget {
@@ -67,7 +72,7 @@ class TabBarDemo extends StatelessWidget {
         body:  TabBarView(
           children: [
             const DashBoard(),
-            const Parques(),
+            ParquesPage(),
             const Mapa(),
             RegistarIncidentes(parque: registarIncidenteParque,),
           ],

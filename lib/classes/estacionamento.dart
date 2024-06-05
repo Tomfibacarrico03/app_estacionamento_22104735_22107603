@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import 'incidente.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ class Estacionamento {
   final double distancia;
   final double preco;
   List<Incidente> incidentes = [];
+
   Estacionamento(
       {required this.imagem,
       required this.nome,
@@ -41,5 +44,15 @@ class Estacionamento {
 
   getOcupacao() {
     return '$atualOcupacao / $maximoOcupacao';
+  }
+
+  factory Estacionamento.fromMap(Map<String,dynamic> map){
+    return Estacionamento(
+        nome: map['nome'],
+        endereco: map['areaexploracao'],
+        maximoOcupacao: map['capacidade_max'],
+        atualOcupacao: map['ocupacao'],
+        tipo: map['tipo'],
+        preco: map['tarifa'], imagem: '', distancia: 0 );
   }
 }

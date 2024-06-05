@@ -4,7 +4,7 @@ import 'package:app_estacionamento_22104735_22107603/globals.dart';
 import '../classes/estacionamento.dart';
 
 class DashBoard extends StatefulWidget {
-  const DashBoard({Key? key}) : super(key: key);
+  const DashBoard({super.key});
 
   @override
   _DashBoardState createState() => _DashBoardState();
@@ -37,15 +37,20 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   void findParkWithMostIncidents() {
-    parkWithMostIncidents = listaDeParques.reduce((current, next) {
-      return (current.incidentes.length > next.incidentes.length)
-          ? current
-          : next;
-    });
-    // Check if the highest incident count is 0
-    if (parkWithMostIncidents!.incidentes.isEmpty) {
+    if (listaDeParques.isEmpty) {
       parkWithMostIncidents = null;
+    } else {
+      parkWithMostIncidents = listaDeParques.reduce((current, next) {
+        return (current.incidentes.length > next.incidentes.length)
+            ? current
+            : next;
+      });
+      // Check if the highest incident count is 0
+      if (parkWithMostIncidents!.incidentes.isEmpty) {
+        parkWithMostIncidents = null;
+      }
     }
+    setState(() {});
   }
 
   @override
@@ -129,14 +134,21 @@ class _DashBoardState extends State<DashBoard> {
                       fontSize: 14, // Font size for title
                     ),
                   ),
-                  subtitle: Text('${listaDeParques[1].nome} -> ${listaDeParques[1].distancia} km' ,
+                  subtitle: listaDeParques.isNotEmpty
+                      ? Text('${listaDeParques[1].nome} -> ${listaDeParques[1].distancia} km',
                     style: const TextStyle(
                       color: Colors.white, // Cor do texto
                       fontWeight: FontWeight.bold, // Bold text for emphasis
                       fontSize: 17, // Font size for title
                     ),
+                  )
+                      : const Text('Nenhum parque encontrado',
+                    style: TextStyle(
+                      color: Colors.white, // Cor do texto
+                      fontWeight: FontWeight.bold, // Bold text for emphasis
+                      fontSize: 17, // Font size for title
+                    ),
                   ),
-
                 ),
               ),
               const SizedBox(height: 10),

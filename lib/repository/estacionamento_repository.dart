@@ -1,34 +1,32 @@
+import 'dart:io';
+
+import 'package:app_estacionamento_22104735_22107603/http/http_client.dart';
+import 'package:app_estacionamento_22104735_22107603/screens/parques.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:app_estacionamento_22104735_22107603/classes/estacionamento.dart';
 
 class EstacionamentosRepository {
-  Future<List<Estacionamento>> fetchEstacionamentos() async {
-    final response = await http.get(Uri.parse('URL_DA_API_DA_EMEL')); // Substitua pela URL da API da EMEL
+  final HttpClient _client;
+
+  EstacionamentosRepository({required HttpClient client}) : _client = client;
+
+  Future<List<Estacionamento>> getEstacionamentos() async {
+    final response = await _client.get(
+        url: 'https://emel.city-platform.com/opendata/parking/zone/',
+        headers: {'api_key': '93600bb4e7fee17750ae478c22182dda'});
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData = json.decode(response.body);
-      List<Estacionamento> estacionamentos = jsonData.map((item) => Estacionamento.fromJson(item)).toList();
-      await saveEstacionamentosLocally(estacionamentos);
-      return estacionamentos;
-    } else {
-      throw Exception('Falha ao carregar dados');
-    }
-  }
+      final responseJSON = jsonDecode(response.body);
+      List charactersJSON = (responseJSON['docs']);
 
-  Future<void> saveEstacionamentosLocally(List<Estacionamento> estacionamentos) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> jsonData = estacionamentos.map((estacionamento) => json.encode(estacionamento.toJson())).toList();
-    await prefs.setStringList('estacionamentos', jsonData);
-  }
+      List<Estacionamento> parques = charactersJSON
+          .map((characterJSON) => Estacionamento.fromMap(characterJSON))
+          .toList();
 
-  Future<List<Estacionamento>> loadEstacionamentosFromLocalStorage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? jsonData = prefs.getStringList('estacionamentos');
-    if (jsonData != null) {
-      return jsonData.map((item) => Estacionamento.fromJson(json.decode(item))).toList();
+      return parques;
     } else {
-      return [];
+      throw Exception('status code: ${response.statusCode}');
     }
   }
 }

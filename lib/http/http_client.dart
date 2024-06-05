@@ -1,28 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+ import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Car {
-  final int id;
-  final String title;
-  final String body;
+class HttpClient {
+  final client = Client();
+  
+  Future<Response> get({ required String url, Map<String, String>? headers }) {
+    return client.get(Uri.parse(url), headers: headers);
 
-  Car({required this.id, required this.title, required this.body});
-
-  factory Car.fromJson(Map<String, dynamic> json) {
-    return Car(
-      id: json['id'],
-      title: json['title'],
-      body: json['body'],
-    );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'body': body,
-    };
-  }
+  
 }

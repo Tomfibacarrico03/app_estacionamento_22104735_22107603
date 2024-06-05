@@ -316,7 +316,7 @@ class _formIncidente extends State<RegistarIncidentes> {
                     severity = value;
                   });
                 },
-                thumbColor: const Color(0xC37C4AFF),
+                thumbColor: const Color(0xFF3ADF43),
                 activeColor: const Color(0xFF00486A),
               ),
               Padding(
