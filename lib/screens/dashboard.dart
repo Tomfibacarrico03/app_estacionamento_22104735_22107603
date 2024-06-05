@@ -11,10 +11,13 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+
   final TextEditingController parque = TextEditingController();
   List<Estacionamento> filteredList = [];
   bool showSearchResults = false;
   Estacionamento? parkWithMostIncidents;
+  List<Estacionamento> listaDeParques = [];
+
 
   @override
   void initState() {
@@ -55,6 +58,7 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),

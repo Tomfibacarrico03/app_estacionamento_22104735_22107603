@@ -13,15 +13,15 @@ class EstacionamentosRepository {
 
   Future<List<Estacionamento>> getEstacionamentos() async {
     final response = await _client.get(
-        url: 'https://emel.city-platform.com/opendata/parking/zone/',
-        headers: {'api_key': '93600bb4e7fee17750ae478c22182dda'});
+        url: 'https://emel.city-platform.com/opendata/parking/lots',
+        headers: {'accept': 'application/json','api_key': '93600bb4e7fee17750ae478c22182dda'});
 
     if (response.statusCode == 200) {
       final responseJSON = jsonDecode(response.body);
-      List charactersJSON = (responseJSON['docs']);
+      List charactersJSON = responseJSON;
 
       List<Estacionamento> parques = charactersJSON
-          .map((characterJSON) => Estacionamento.fromMap(characterJSON))
+          .map((charactersJSON) => Estacionamento.fromMap(charactersJSON))
           .toList();
 
       return parques;
@@ -29,4 +29,5 @@ class EstacionamentosRepository {
       throw Exception('status code: ${response.statusCode}');
     }
   }
+
 }
