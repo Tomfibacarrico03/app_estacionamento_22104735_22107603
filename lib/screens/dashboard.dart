@@ -1,7 +1,9 @@
 import 'package:app_estacionamento_22104735_22107603/screens/detalhes.dart';
 import 'package:flutter/material.dart';
 import 'package:app_estacionamento_22104735_22107603/globals.dart';
+import 'package:provider/provider.dart'; // Importar o Provider
 import '../classes/estacionamento.dart';
+import 'package:app_estacionamento_22104735_22107603/geoLocalizacao/controlador.dart'; // Importar o controlador de geolocalização
 
 class DashBoard extends StatefulWidget {
   const DashBoard({super.key});
@@ -18,11 +20,13 @@ class _DashBoardState extends State<DashBoard> {
   Estacionamento? parkWithMostIncidents;
   List<Estacionamento> listaDeParques = [];
 
-
   @override
   void initState() {
     super.initState();
     findParkWithMostIncidents();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<controlGeo>(context, listen: false).localizacao(); // Solicitar localização após o carregamento do widget
+    });
   }
 
   void filterSearch(String query) {
@@ -58,6 +62,7 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
+    final geo = Provider.of<controlGeo>(context); // Acessar o controlador de geolocalização
 
     return Scaffold(
       body: Padding(
@@ -165,7 +170,6 @@ class _DashBoardState extends State<DashBoard> {
                 color : const Color(0xFFFFFFFF),
                 elevation: 5, // Elevação para sombra
                 child: Column(
-
                   mainAxisSize: MainAxisSize.min, // Tamanho mínimo baseado no conteúdo
                   children: <Widget>[
                     Container(
@@ -178,6 +182,31 @@ class _DashBoardState extends State<DashBoard> {
                       ),
                     ),
 
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Latitude: ${geo.lat}',
+                            style: const TextStyle(
+                              color: Color(0xFF00486A),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'Longitude: ${geo.long}',
+                            style: const TextStyle(
+                              color: Color(0xFF00486A),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Container(
                       alignment: Alignment.center,
                       height: 275.0,

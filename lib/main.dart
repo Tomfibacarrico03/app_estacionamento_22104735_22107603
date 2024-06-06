@@ -8,6 +8,7 @@ import 'screens/mapa.dart';
 import 'screens/registarincidente.dart';
 import 'repository/estacionamento_repository.dart';
 import 'http/http_client.dart';
+import 'geoLocalizacao/controlador.dart'; // Importação do controlador de geolocalização
 
 void main() {
   runApp(
@@ -16,6 +17,9 @@ void main() {
         Provider<EstacionamentosRepository>(
             create: (_) => EstacionamentosRepository(client: HttpClient())),
         Provider<PARQUESDatabase>(create: (_) => PARQUESDatabase()),
+        ChangeNotifierProvider<controlGeo>( // Adição do controlador de geolocalização
+          create: (_) => controlGeo(),
+        ),
       ],
       child: const TabBarDemo(),
     ),
