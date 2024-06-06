@@ -64,4 +64,25 @@ class Estacionamento {
         tipo: map['tipo'], imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: map['data_ocupacao'],
     );
   }
+   factory Estacionamento.fromDB(Map<String,dynamic> db){
+    print(db['ocupacao']);
+     return Estacionamento(
+       nome: db['nome'],
+       maximoOcupacao: db['capacidade_max'],
+       atualOcupacao: db['ocupacao'],
+       tipo: db['tipo'], imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: db['data_ocupacao'],
+     );
+   }
+
+   Map<String, dynamic> toDb(){
+    return {
+      'nome':nome,
+      'capacidade_max': maximoOcupacao,
+      'ocupacao':atualOcupacao,
+      'tipo':tipo,
+      'distancia':distancia,
+      'preco':preco,
+      'data_ocupacao':dataAtualizada
+    };
+   }
 }

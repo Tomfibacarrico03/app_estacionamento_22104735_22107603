@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:math';
+import 'package:app_estacionamento_22104735_22107603/data/parques_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../classes/estacionamento.dart';
 import 'detalhes.dart';
 import 'package:app_estacionamento_22104735_22107603/repository/estacionamento_repository.dart';
@@ -11,11 +14,60 @@ class ParquesPage extends StatefulWidget {
 }
 
 class Parques extends State<ParquesPage> {
+  Future<List<Estacionamento>>? listaDeParques;
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  bool _isConnected = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initConnectivity();
+  }
+
+  Future<void> _initConnectivity() async {
+    await _checkConnectivity();
+    setState(() {
+      listaDeParques = _getEstacionamentos();
+    });
+  }
+
+  Future<void> _checkConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    setState(() {
+      _isConnected = connectivityResult != ConnectivityResult.none;
+    });
+  }
+
+  Future<List<Estacionamento>> _getEstacionamentos() async {
+    final parquesDB = context.read<PARQUESDatabase>();
+    final parquesRepo = context.read<EstacionamentosRepository>();
+
+    if (!_isConnected) {
+      List<Estacionamento> localEstacionamentos = await parquesDB.getEstacionamentos();
+      return localEstacionamentos;
+    }
+
+    List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos();
+
+    for (var estacionamento in estacionamentos) {
+      var existingEstacionamento = await parquesDB.getEstacionamentoByNome(estacionamento.nome);
+      if (existingEstacionamento != null) {
+        await parquesDB.update(estacionamento);
+      } else {
+        await parquesDB.insert(estacionamento);
+      }    }
+
+    return estacionamentos;
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final parques = context.read<EstacionamentosRepository>();
-    Future<List<Estacionamento>> listaDeParques = parques.getEstacionamentos();
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50.0),
@@ -47,17 +99,24 @@ class Parques extends State<ParquesPage> {
           elevation: 0,
         ),
       ),
-      body: FutureBuilder<List<Estacionamento>>(
+      body: listaDeParques == null
+          ? const Center(child: CircularProgressIndicator())
+          : FutureBuilder<List<Estacionamento>>(
         future: listaDeParques,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar os parques'));
+            print("Error: ${snapshot.error}");
+            return Center(
+                child: Text(_isConnected
+                    ? 'Erro ao carregar os parques'
+                    : 'No internet connection'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhum parque encontrado'));
           } else {
             final parquesList = snapshot.data!;
+            print("Number of parques: ${parquesList.length}");
             return Scrollbar(
               thumbVisibility: true,
               thickness: 6.0,
@@ -69,12 +128,16 @@ class Parques extends State<ParquesPage> {
                   return InkWell(
                     onTap: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => DetalhesDoParque(parque: estacionamento)),
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                DetalhesDoParque(parque: estacionamento)),
                       );
                     },
                     child: ListTile(
-                      title: Text(estacionamento.nome, style: const TextStyle(color: Color(0xFF00486A))),
-                      subtitle: Text(estacionamento.dataAtualizada, style: const TextStyle(color: Color(0xFF00486A))),
+                      title: Text(estacionamento.nome,
+                          style: const TextStyle(color: Color(0xFF00486A))),
+                      subtitle: Text(estacionamento.dataAtualizada,
+                          style: const TextStyle(color: Color(0xFF00486A))),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -85,10 +148,14 @@ class Parques extends State<ParquesPage> {
                               color: getColorForStatus(estacionamento),
                             ),
                           ),
-                          const Icon(Icons.arrow_forward_ios_rounded, color: Color(0xFF747F98)),
+                          const Icon(Icons.arrow_forward_ios_rounded,
+                              color: Color(0xFF747F98)),
                         ],
                       ),
-                      leading: Text('${estacionamento.distancia.toStringAsFixed(1)} km', style: const TextStyle(color: Color(0xFF00486A))),
+                      leading: Text(
+                          '${estacionamento.distancia.toStringAsFixed(1)} km',
+                          style:
+                          const TextStyle(color: Color(0xFF00486A))),
                     ),
                   );
                 },

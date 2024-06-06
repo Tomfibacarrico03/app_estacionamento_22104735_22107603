@@ -1,14 +1,14 @@
-import 'dart:math';
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../classes/incidente.dart';
 import '../repository/estacionamento_repository.dart';
-import 'detalhes.dart';
-import 'parques.dart';
 import '../classes/estacionamento.dart';
+import 'detalhes.dart';
 import 'package:intl/intl.dart';
 import '../classes/gravidade.dart';
+import '../data/parques_database.dart';
 
 class RegistarIncidentes extends StatefulWidget {
   final Estacionamento? parque;
@@ -34,6 +34,55 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   double severity = 1;
+  Future<List<Estacionamento>>? listaDeParques;
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  bool _isConnected = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initConnectivity();
+  }
+
+  Future<void> _initConnectivity() async {
+    await _checkConnectivity();
+    setState(() {
+      listaDeParques = _getEstacionamentos();
+    });
+  }
+
+  Future<void> _checkConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    setState(() {
+      _isConnected = connectivityResult != ConnectivityResult.none;
+    });
+  }
+
+  Future<List<Estacionamento>> _getEstacionamentos() async {
+    final parquesDB = context.read<PARQUESDatabase>();
+    final parquesRepo = context.read<EstacionamentosRepository>();
+
+    if (!_isConnected) {
+      List<Estacionamento> localEstacionamentos =
+          await parquesDB.getEstacionamentos();
+      return localEstacionamentos;
+    }
+
+    List<Estacionamento> estacionamentos =
+        await parquesRepo.getEstacionamentos();
+
+    for (var estacionamento in estacionamentos) {
+      var existingEstacionamento =
+          await parquesDB.getEstacionamentoByNome(estacionamento.nome);
+      if (existingEstacionamento != null) {
+        await parquesDB.update(estacionamento);
+      } else {
+        await parquesDB.insert(estacionamento);
+      }
+    }
+
+    return estacionamentos;
+  }
 
   void verificarCamposEPreencherIncidente() {
     if (estacionamentoSelecionado == null || descricao.isEmpty) {
@@ -60,7 +109,8 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
         data: selectedDate,
         hora: selectedTime,
         descricao: descricao,
-        gravidade: Gravidade.values[severity.toInt() - 1], // Ajusta gravidade aqui
+        gravidade:
+            Gravidade.values[severity.toInt() - 1], // Ajusta gravidade aqui
       ));
       showDialog(
         context: context,
@@ -73,7 +123,11 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                 child: const Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop(); // Fecha o diálogo
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DetalhesDoParque(parque: estacionamentoSelecionado!)));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DetalhesDoParque(
+                              parque: estacionamentoSelecionado!)));
                 },
               ),
             ],
@@ -93,7 +147,8 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
             primaryColor: const Color(0xFF00486A),
             hintColor: const Color(0xFF00486A),
             colorScheme: const ColorScheme.light(primary: Color(0xFF00486A)),
-            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            buttonTheme:
+                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
             dialogBackgroundColor: Colors.white,
           ),
           child: child!,
@@ -101,7 +156,11 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
       },
     );
 
-    if (pickedTime != null && (pickedTime.hour < TimeOfDay.now().hour || (pickedTime.hour == TimeOfDay.now().hour && pickedTime.minute <= TimeOfDay.now().minute)) || selectedDate.day < DateTime.now().day) {
+    if (pickedTime != null &&
+            (pickedTime.hour < TimeOfDay.now().hour ||
+                (pickedTime.hour == TimeOfDay.now().hour &&
+                    pickedTime.minute <= TimeOfDay.now().minute)) ||
+        selectedDate.day < DateTime.now().day) {
       setState(() {
         selectedTime = pickedTime!;
         _formHora.text = selectedTime.format(context);
@@ -121,7 +180,8 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
             primaryColor: const Color(0xFF00486A),
             hintColor: const Color(0xFF00486A),
             colorScheme: const ColorScheme.light(primary: Color(0xFF00486A)),
-            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            buttonTheme:
+                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
             dialogBackgroundColor: Colors.white,
           ),
           child: child!,
@@ -129,7 +189,9 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
       },
     );
 
-    if (pickedDate != null && (pickedDate.isBefore(DateTime.now()) || pickedDate.isAtSameMomentAs(DateTime.now()))) {
+    if (pickedDate != null &&
+        (pickedDate.isBefore(DateTime.now()) ||
+            pickedDate.isAtSameMomentAs(DateTime.now()))) {
       setState(() {
         selectedDate = pickedDate;
         _formData.text = DateFormat('dd/MM/yyyy').format(selectedDate);
@@ -155,10 +217,14 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
   }
 
   @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final values = [1, 2, 3, 4, 5];
-    final parques = context.read<EstacionamentosRepository>();
-    Future<List<Estacionamento>> listaDeParques = parques.getEstacionamentos();
 
     return Scaffold(
       appBar: PreferredSize(
@@ -200,11 +266,13 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                 future: listaDeParques,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('Erro ao carregar os parques'));
+                    return const Center(
+                        child: Text('Erro ao carregar os parques'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('Nenhum parque encontrado'));
+                    return const Center(
+                        child: Text('Nenhum parque encontrado'));
                   } else {
                     return DropdownButtonFormField<Estacionamento>(
                       icon: const Icon(Icons.keyboard_arrow_down_rounded),
@@ -212,11 +280,13 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                         label: const Text("Parque"),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(40),
-                          borderSide: const BorderSide(color: Colors.black, width: 2),
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 2),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(40),
-                          borderSide: const BorderSide(color: Colors.lightGreen, width: 3),
+                          borderSide: const BorderSide(
+                              color: Colors.lightGreen, width: 3),
                         ),
                       ),
                       value: estacionamentoSelecionado,
@@ -226,13 +296,14 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                           estacionamentoSelecionado = newValue;
                         });
                       },
-                      items: snapshot.data!.map<DropdownMenuItem<Estacionamento>>(
+                      items: snapshot.data!
+                          .map<DropdownMenuItem<Estacionamento>>(
                               (Estacionamento estacionamento) {
-                            return DropdownMenuItem<Estacionamento>(
-                              value: estacionamento,
-                              child: Text(estacionamento.nome),
-                            );
-                          }).toList(),
+                        return DropdownMenuItem<Estacionamento>(
+                          value: estacionamento,
+                          child: Text(estacionamento.nome),
+                        );
+                      }).toList(),
                     );
                   }
                 },
@@ -309,10 +380,10 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                   children: values
                       .map(
                         (e) => Text(
-                      e.toString(),
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  )
+                          e.toString(),
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
@@ -324,7 +395,8 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                 onPressed: verificarCamposEPreencherIncidente,
                 child: const Text(
                   'Registrar Incidente',
-                  style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
                 ),
               ),
             ],
