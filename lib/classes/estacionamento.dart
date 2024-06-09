@@ -66,21 +66,21 @@ class Estacionamento {
     }
     print('Estacionamento fromMap: $map');
     return Estacionamento(
-      id: " hsui",
-        nome: map['nome'],
-        maximoOcupacao: ocupacaoMax,
-        atualOcupacao: ocupacaoAtual,
-        tipo: map['tipo'], imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: map['data_ocupacao'],
+      nome: map['nome'] ?? 'Unnamed',
+      id: map['id_parque'] ?? 'Unknown',
+      maximoOcupacao: map['capacidade_max'] ?? 0,
+      atualOcupacao: map['ocupacao'] ?? 0,
+      tipo: map['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: map['data_ocupacao'],
     );
   }
    factory Estacionamento.fromDB(Map<String,dynamic> db){
-     print('Estacionamento fromMap: $db');
+     print('Estacionamento fromDB: $db');
      return Estacionamento(
-       id: db['id'],
-       nome: db['nome'],
-       maximoOcupacao: db['capacidade_max'],
-       atualOcupacao: db['ocupacao'],
-       tipo: db['tipo'], imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: db['data_ocupacao'],
+       id: db['id'] ?? 'Unknown',
+       nome: db['nome'] ?? 'Unnamed',
+       maximoOcupacao: db['capacidade_max'] ?? 0,
+       atualOcupacao: db['ocupacao'] ?? 0,
+       tipo: db['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: db['data_ocupacao'],
      );
    }
 

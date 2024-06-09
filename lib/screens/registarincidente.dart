@@ -73,7 +73,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
 
     for (var estacionamento in estacionamentos) {
       var existingEstacionamento =
-          await parquesDB.getEstacionamentoByNome(estacionamento.nome);
+          await parquesDB.getEstacionamentoById(estacionamento.id);
       if (existingEstacionamento != null) {
         await parquesDB.update(estacionamento);
       } else {

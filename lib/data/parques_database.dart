@@ -13,7 +13,7 @@ class PARQUESDatabase {
         await db.execute('''
           CREATE TABLE estacionamento(
             nome TEXT PRIMARY KEY,
-            id TEXT NULL,
+            id TEXT,
             capacidade_max INTEGER NOT NULL,
             ocupacao INTEGER NOT NULL,
             tipo TEXT,
@@ -43,14 +43,14 @@ class PARQUESDatabase {
     await _database!.insert("estacionamento", estacionamento.toDb());
   }
 
-  Future<Estacionamento?> getEstacionamentoByNome(String nome) async {
+  Future<Estacionamento?> getEstacionamentoById(String id) async {
     if (_database == null) {
       throw Exception("Forgot to initialize the database");
     }
     List<Map<String, dynamic>> result = await _database!.query(
       'estacionamento',
-      where: 'nome = ?',
-      whereArgs: [nome],
+      where: 'id = ?',
+      whereArgs: [id],
     );
 
     if (result.isNotEmpty) {

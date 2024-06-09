@@ -50,7 +50,7 @@ class Parques extends State<ParquesPage> {
     List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos();
 
     for (var estacionamento in estacionamentos) {
-      var existingEstacionamento = await parquesDB.getEstacionamentoByNome(estacionamento.nome);
+      var existingEstacionamento = await parquesDB.getEstacionamentoById(estacionamento.id);
       if (existingEstacionamento != null) {
         await parquesDB.update(estacionamento);
       } else {
