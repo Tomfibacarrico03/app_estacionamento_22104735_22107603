@@ -19,6 +19,7 @@ class Parques extends State<ParquesPage> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isConnected = true;
 
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +33,7 @@ class Parques extends State<ParquesPage> {
       listaDeParques = _getEstacionamentos(geo);
     });
   }
+
 
   Future<void> _checkConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
