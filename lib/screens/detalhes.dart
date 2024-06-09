@@ -205,7 +205,7 @@ class DetalhesDoParque extends StatelessWidget {
                       Navigator.of(context).popUntil((route) => route.isFirst);
                       // Abre a tela principal com o índice da aba desejada
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => TabBarDemo(initialIndex: 3, registarIncidenteParque: parque), // Índice da aba "Registrar Incidente"
+                        builder: (context) => TabBarDemo(initialIndex: 3, registarIncidenteParque: null), // Índice da aba "Registrar Incidente"
                       ));
                     },
                     child: const Text(

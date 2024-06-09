@@ -21,12 +21,12 @@ class RegistarIncidentes extends StatefulWidget {
 
 class _FormIncidenteState extends State<RegistarIncidentes> {
   final Estacionamento? parque;
+  Estacionamento? estacionamentoSelecionado;
 
   _FormIncidenteState({this.parque}) {
     estacionamentoSelecionado = this.parque;
   }
 
-  Estacionamento? estacionamentoSelecionado;
   final _formData = TextEditingController();
   final _formHora = TextEditingController();
   final _formDescricao = TextEditingController();
