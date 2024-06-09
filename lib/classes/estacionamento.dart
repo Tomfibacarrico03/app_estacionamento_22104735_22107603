@@ -52,6 +52,9 @@ class Estacionamento {
     if (maximoOcupacao! < 0){
       maximoOcupacao = maximoOcupacao! * (-1);
     }
+    if(atualOcupacao! > maximoOcupacao!){
+      atualOcupacao = maximoOcupacao;
+    }
     return '$atualOcupacao / $maximoOcupacao';
   }
 
