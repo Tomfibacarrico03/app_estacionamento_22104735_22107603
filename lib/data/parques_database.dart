@@ -12,8 +12,8 @@ class PARQUESDatabase {
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE estacionamento(
-            nome TEXT PRIMARY KEY,
-            id TEXT,
+            id TEXT PRIMARY KEY,
+            nome TEXT ,
             capacidade_max INTEGER NOT NULL,
             ocupacao INTEGER NOT NULL,
             tipo TEXT,
