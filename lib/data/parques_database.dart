@@ -13,6 +13,7 @@ class PARQUESDatabase {
         await db.execute('''
           CREATE TABLE estacionamento(
             nome TEXT PRIMARY KEY,
+            id TEXT NULL,
             capacidade_max INTEGER NOT NULL,
             ocupacao INTEGER NOT NULL,
             tipo TEXT,

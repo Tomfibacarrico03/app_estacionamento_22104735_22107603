@@ -3,6 +3,7 @@ import 'incidente.dart';
 import 'package:flutter/material.dart';
 
 class Estacionamento {
+   String id = 'P';
    String imagem;
    String nome;
    String endereco;
@@ -15,7 +16,8 @@ class Estacionamento {
   List<Incidente> incidentes = [];
 
   Estacionamento(
-      {  required this.imagem,
+      { required this.id ,
+        required this.imagem,
         required this.nome,
         required this.endereco,
         required this.maximoOcupacao,
@@ -64,6 +66,7 @@ class Estacionamento {
     }
     print('Estacionamento fromMap: $map');
     return Estacionamento(
+      id: " hsui",
         nome: map['nome'],
         maximoOcupacao: ocupacaoMax,
         atualOcupacao: ocupacaoAtual,
@@ -73,6 +76,7 @@ class Estacionamento {
    factory Estacionamento.fromDB(Map<String,dynamic> db){
      print('Estacionamento fromMap: $db');
      return Estacionamento(
+       id: db['id'],
        nome: db['nome'],
        maximoOcupacao: db['capacidade_max'],
        atualOcupacao: db['ocupacao'],
@@ -82,6 +86,7 @@ class Estacionamento {
 
    Map<String, dynamic> toDb(){
     return {
+      'id': id,
       'nome':nome,
       'capacidade_max': maximoOcupacao,
       'ocupacao':atualOcupacao,
