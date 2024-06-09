@@ -13,7 +13,7 @@ class getMoreInfo {
 
   Future<List<Estacionamento>> getEstacionamentos() async {
     final response = await _client.get(
-        url: 'https://emel.city-platform.com/opendata/parking/lots',
+        url: 'https://emel.city-platform.com/opendata/parking/zone/list',
         headers: {'accept': 'application/json','api_key': '93600bb4e7fee17750ae478c22182dda'});
 
     if (response.statusCode == 200) {

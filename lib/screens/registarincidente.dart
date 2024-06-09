@@ -69,7 +69,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
     }
 
     List<Estacionamento> estacionamentos =
-        await parquesRepo.getEstacionamentos();
+        await parquesRepo.getEstacionamentos(null);
 
     for (var estacionamento in estacionamentos) {
       var existingEstacionamento =

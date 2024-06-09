@@ -18,7 +18,9 @@ class PARQUESDatabase {
             ocupacao INTEGER NOT NULL,
             tipo TEXT,
             distancia DECIMAL,
-            preco DECIMAL,
+            tarifa String,
+            latitude DECIMAL,
+            longitude DECIMAL,
             data_ocupacao TEXT
           )
         ''');

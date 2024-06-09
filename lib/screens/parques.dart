@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../classes/estacionamento.dart';
+import '../geoLocalizacao/controlador.dart';
 import 'detalhes.dart';
 import 'package:app_estacionamento_22104735_22107603/repository/estacionamento_repository.dart';
 
 class ParquesPage extends StatefulWidget {
   @override
   Parques createState() => Parques();
+
 }
 
 class Parques extends State<ParquesPage> {
@@ -25,10 +27,13 @@ class Parques extends State<ParquesPage> {
   }
 
   Future<void> _initConnectivity() async {
+    final parquesRepo = context.read<EstacionamentosRepository>();
     await _checkConnectivity();
+
     setState(() {
       listaDeParques = _getEstacionamentos();
     });
+
   }
 
   Future<void> _checkConnectivity() async {
@@ -47,7 +52,7 @@ class Parques extends State<ParquesPage> {
       return localEstacionamentos;
     }
 
-    List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos();
+    List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos(null);
 
     for (var estacionamento in estacionamentos) {
       var existingEstacionamento = await parquesDB.getEstacionamentoById(estacionamento.id);
@@ -68,6 +73,7 @@ class Parques extends State<ParquesPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50.0),

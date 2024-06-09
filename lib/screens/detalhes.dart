@@ -140,7 +140,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '${parque.preco.toStringAsFixed(2)} €/Hora',
+                      parque.tarifa,
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,

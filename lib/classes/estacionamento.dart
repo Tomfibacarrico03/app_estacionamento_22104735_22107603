@@ -12,7 +12,9 @@ class Estacionamento {
    String tipo;
    String dataAtualizada;
    double distancia;
-   double preco;
+   String tarifa;
+   String latitude;
+   String longitude;
   List<Incidente> incidentes = [];
 
   Estacionamento(
@@ -25,7 +27,9 @@ class Estacionamento {
         required this.tipo,
         required this.dataAtualizada,
         required this.distancia,
-        required this.preco}
+        required this.latitude,
+        required this.longitude,
+        required this.tarifa}
       );
 
 
@@ -68,9 +72,11 @@ class Estacionamento {
     return Estacionamento(
       nome: map['nome'] ?? 'Unnamed',
       id: map['id_parque'] ?? 'Unknown',
-      maximoOcupacao: map['capacidade_max'] ?? 0,
-      atualOcupacao: map['ocupacao'] ?? 0,
-      tipo: map['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: map['data_ocupacao'],
+      maximoOcupacao: ocupacaoMax,
+      atualOcupacao: ocupacaoAtual,
+      latitude: map['latitude'],
+      longitude: map['longitude'],
+      tipo: map['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, tarifa: map['tarifa']?? 'Unknown', dataAtualizada: map['data_ocupacao'],
     );
   }
    factory Estacionamento.fromDB(Map<String,dynamic> db){
@@ -80,7 +86,9 @@ class Estacionamento {
        nome: db['nome'] ?? 'Unnamed',
        maximoOcupacao: db['capacidade_max'] ?? 0,
        atualOcupacao: db['ocupacao'] ?? 0,
-       tipo: db['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: db['data_ocupacao'],
+       latitude: db['latitude'],
+       longitude: db['longitude'],
+       tipo: db['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, tarifa: db['tarifa']?? 'Unknown', dataAtualizada: db['data_ocupacao'],
      );
    }
 
@@ -92,7 +100,9 @@ class Estacionamento {
       'ocupacao':atualOcupacao,
       'tipo':tipo,
       'distancia':distancia,
-      'preco':preco,
+      'tarifa':tarifa,
+      'latitude': latitude,
+      'longitude': longitude,
       'data_ocupacao':dataAtualizada
     };
    }
