@@ -74,8 +74,8 @@ class Estacionamento {
       id: map['id_parque'] ?? 'Unknown',
       maximoOcupacao: ocupacaoMax,
       atualOcupacao: ocupacaoAtual,
-      latitude: map['latitude'],
-      longitude: map['longitude'],
+      latitude: double.parse(map['latitude']),
+      longitude: double.parse(map['longitude']),
       tipo: map['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, tarifa: map['tarifa']?? 'Unknown', dataAtualizada: map['data_ocupacao'],
     );
   }
