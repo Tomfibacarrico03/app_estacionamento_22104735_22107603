@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:app_estacionamento_22104735_22107603/data/parques_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../classes/estacionamento.dart';
+import '../data/parques_database.dart';
 import '../geoLocalizacao/controlador.dart';
 import 'detalhes.dart';
 import 'package:app_estacionamento_22104735_22107603/repository/estacionamento_repository.dart';
@@ -12,7 +12,6 @@ import 'package:app_estacionamento_22104735_22107603/repository/estacionamento_r
 class ParquesPage extends StatefulWidget {
   @override
   Parques createState() => Parques();
-
 }
 
 class Parques extends State<ParquesPage> {
@@ -27,13 +26,11 @@ class Parques extends State<ParquesPage> {
   }
 
   Future<void> _initConnectivity() async {
-    final parquesRepo = context.read<EstacionamentosRepository>();
     await _checkConnectivity();
-
+    final controlGeo geo = Provider.of<controlGeo>(context, listen: false); // Moved here to access context
     setState(() {
-      listaDeParques = _getEstacionamentos();
+      listaDeParques = _getEstacionamentos(geo);
     });
-
   }
 
   Future<void> _checkConnectivity() async {
@@ -43,7 +40,7 @@ class Parques extends State<ParquesPage> {
     });
   }
 
-  Future<List<Estacionamento>> _getEstacionamentos() async {
+  Future<List<Estacionamento>> _getEstacionamentos(controlGeo geo) async {
     final parquesDB = context.read<PARQUESDatabase>();
     final parquesRepo = context.read<EstacionamentosRepository>();
 
@@ -52,7 +49,7 @@ class Parques extends State<ParquesPage> {
       return localEstacionamentos;
     }
 
-    List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos(null);
+    List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos(geo);
 
     for (var estacionamento in estacionamentos) {
       var existingEstacionamento = await parquesDB.getEstacionamentoById(estacionamento.id);
@@ -60,7 +57,8 @@ class Parques extends State<ParquesPage> {
         await parquesDB.update(estacionamento);
       } else {
         await parquesDB.insert(estacionamento);
-      }    }
+      }
+    }
 
     return estacionamentos;
   }
@@ -73,7 +71,6 @@ class Parques extends State<ParquesPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50.0),
@@ -172,16 +169,16 @@ class Parques extends State<ParquesPage> {
       ),
     );
   }
-}
 
-Color getColorForStatus(Estacionamento parque) {
-  if (parque.atualOcupacao == parque.maximoOcupacao) {
-    return Colors.red;
-  } else if (parque.atualOcupacao! >= parque.maximoOcupacao! / 2) {
-    return Colors.orange;
-  } else if (parque.atualOcupacao! < parque.maximoOcupacao! / 2) {
-    return Colors.green;
-  } else {
-    return Colors.grey;
+  Color getColorForStatus(Estacionamento parque) {
+    if (parque.atualOcupacao == parque.maximoOcupacao) {
+      return Colors.red;
+    } else if (parque.atualOcupacao! >= parque.maximoOcupacao! / 2) {
+      return Colors.orange;
+    } else if (parque.atualOcupacao! < parque.maximoOcupacao! / 2) {
+      return Colors.green;
+    } else {
+      return Colors.grey;
+    }
   }
 }
