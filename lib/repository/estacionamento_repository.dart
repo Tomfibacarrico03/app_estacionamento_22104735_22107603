@@ -24,8 +24,9 @@ class EstacionamentosRepository {
           .toList();
 
       if (geo != null) {
+        print("in distance CALC");
         await Future.wait(parques.map((estacionamento) async {
-          estacionamento.distancia = await calculateDistance(geo.lat, geo.long, double.parse(estacionamento.latitude), double.parse(estacionamento.longitude));
+          estacionamento.distancia = (await calculateDistance(geo.lat, geo.long, estacionamento.latitude, estacionamento.longitude)).toDouble();
         }));
       }
 
@@ -36,16 +37,16 @@ class EstacionamentosRepository {
   }
 
   Future<double> calculateDistance(double startLat, double startLng, double endLat, double endLng) async {
-    var url = Uri.parse('https://maps.googleapis.com/maps/api/distancematrix/json?origins=$startLat,$startLng&destinations=$endLat,$endLng&key=YOUR_API_KEY');
+    var url = Uri.parse('https://maps.googleapis.com/maps/api/distancematrix/json?destinations=$endLat,$endLng&origins=$startLat,$startLng&units=imperial&key=AIzaSyCDWKnqhk8QFdDYQtDv5thFpOr2xyEASQI');
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       if (jsonResponse['rows'][0]['elements'][0]['status'] == 'OK') {
-        double distanceInMeters = jsonResponse['rows'][0]['elements'][0]['distance']['value'];
-        return distanceInMeters / 1000.0; // Convert to kilometers
+        double distanceInMeters = jsonResponse['rows'][0]['elements'][0]['distance']['value'].toDouble();
+        return distanceInMeters / 1000.0;
       } else {
-        return 0.0; // Default or error distance
+        return 0.0;
       }
     } else {
       throw Exception('Failed to reach Google API');
