@@ -1,5 +1,6 @@
 import 'package:app_estacionamento_22104735_22107603/data/parques_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:provider/provider.dart';
 import 'classes/estacionamento.dart';
 import 'screens/dashboard.dart';
@@ -10,7 +11,10 @@ import 'repository/estacionamento_repository.dart';
 import 'http/http_client.dart';
 import 'geoLocalizacao/controlador.dart'; // Importação do controlador de geolocalização
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterConfig.loadEnvVariables();
+
   runApp(
     MultiProvider(
       providers: [

@@ -13,9 +13,9 @@ class Estacionamento {
    String dataAtualizada;
    double distancia;
    String tarifa;
-   String latitude;
-   String longitude;
-  List<Incidente> incidentes = [];
+   double latitude;
+   double longitude;
+   List<Incidente> incidentes = [];
 
   Estacionamento(
       { required this.id ,
@@ -87,7 +87,7 @@ class Estacionamento {
        maximoOcupacao: db['capacidade_max'] ?? 0,
        atualOcupacao: db['ocupacao'] ?? 0,
        latitude: db['latitude'],
-       longitude: db['longitude'],
+       longitude: db['longitude'] ,
        tipo: db['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, tarifa: db['tarifa']?? 'Unknown', dataAtualizada: db['data_ocupacao'],
      );
    }

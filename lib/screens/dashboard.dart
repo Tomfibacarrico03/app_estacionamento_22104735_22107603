@@ -26,7 +26,7 @@ class _DashBoardState extends State<DashBoard> {
     super.initState();
     findParkWithMostIncidents();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<controlGeo>(context, listen: false).localizacao(); // Request location after widget loads
+      Provider.of<controlGeo>(context, listen: false).getPosicao(); // Request location after widget loads
     });
   }
 
@@ -175,36 +175,10 @@ class _DashBoardState extends State<DashBoard> {
                       color: Colors.white,
                       child:  const ListTile(
                         leading: Icon(Icons.pin_drop, size: 30, color: Color(0xFF00486A)),
-                        title: Text('Localização', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF00486A))),
-                        subtitle: Text('Local onde se encontra', style: TextStyle(color: Color(0xFF00486A))),
+                        title: Text('Veja os parques mais próximos', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF00486A))),
                       ),
                     ),
 
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Latitude: ${geo.lat}',
-                            style: const TextStyle(
-                              color: Color(0xFF00486A),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            'Longitude: ${geo.long}',
-                            style: const TextStyle(
-                              color: Color(0xFF00486A),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     Container(
                       alignment: Alignment.center,
                       height: 275.0,
@@ -215,7 +189,7 @@ class _DashBoardState extends State<DashBoard> {
                         ),
                         markers: {
                           Marker(
-                            markerId: MarkerId('current_location'),
+                            markerId: const MarkerId('current_location'),
                             position: LatLng(geo.lat, geo.long),
                             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
                           ),

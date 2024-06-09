@@ -25,7 +25,7 @@ class EstacionamentosRepository {
 
       if (geo != null) {
         await Future.wait(parques.map((estacionamento) async {
-          estacionamento.distancia = await calculateDistance(geo.lat, geo.long, double.parse(estacionamento.latitude), double.parse(estacionamento.longitude));
+          estacionamento.distancia = await calculateDistance(geo.lat, geo.long, estacionamento.latitude, estacionamento.longitude);
         }));
       }
 

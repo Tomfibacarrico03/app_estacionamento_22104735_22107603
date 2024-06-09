@@ -4,7 +4,7 @@ import 'package:app_estacionamento_22104735_22107603/repository/estacionamento_r
 
 void main() {
   test('Acesso correto à API', () async {
-    final parques = await EstacionamentosRepository(client: HttpClient()).getEstacionamentos();
+    final parques = await EstacionamentosRepository(client: HttpClient()).getEstacionamentos(null);
 
     expect(parques.isNotEmpty, true);
   });
