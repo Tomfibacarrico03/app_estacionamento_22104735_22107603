@@ -46,29 +46,32 @@ class Estacionamento {
   }
 
   getOcupacao() {
-    if (atualOcupacao! < 0){
-      atualOcupacao = atualOcupacao! * (-1);
-    }
-    if (maximoOcupacao! < 0){
-      maximoOcupacao = maximoOcupacao! * (-1);
-    }
-    if(atualOcupacao! > maximoOcupacao!){
-      atualOcupacao = maximoOcupacao;
-    }
     return '$atualOcupacao / $maximoOcupacao';
   }
 
   factory Estacionamento.fromMap(Map<String,dynamic> map){
+    int ocupacaoAtual =  map['ocupacao'];
+    int ocupacaoMax = map['capacidade_max'];
+
+    if (ocupacaoAtual < 0){
+      ocupacaoAtual = ocupacaoAtual * (-1);
+    }
+    if (ocupacaoMax < 0){
+      ocupacaoMax = ocupacaoMax * (-1);
+    }
+    if(ocupacaoAtual > ocupacaoMax){
+      ocupacaoAtual = ocupacaoMax;
+    }
     print('Estacionamento fromMap: $map');
     return Estacionamento(
         nome: map['nome'],
-        maximoOcupacao: map['capacidade_max'],
-        atualOcupacao: map['ocupacao'],
+        maximoOcupacao: ocupacaoMax,
+        atualOcupacao: ocupacaoAtual,
         tipo: map['tipo'], imagem: '_', endereco: '_', distancia: 0, preco: 0, dataAtualizada: map['data_ocupacao'],
     );
   }
    factory Estacionamento.fromDB(Map<String,dynamic> db){
-    print(db['ocupacao']);
+     print('Estacionamento fromMap: $db');
      return Estacionamento(
        nome: db['nome'],
        maximoOcupacao: db['capacidade_max'],
