@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../classes/incidente.dart';
 import '../data/incidentes_database.dart';
+import '../main.dart';
 import '../repository/estacionamento_repository.dart';
 import '../classes/estacionamento.dart';
 import 'detalhes.dart';
@@ -25,7 +26,9 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
   Estacionamento? estacionamentoSelecionado;
 
   _FormIncidenteState({this.parque}) {
-    estacionamentoSelecionado = this.parque;
+    if(parque != null){
+      estacionamentoSelecionado = this.parque;
+    }
   }
 
   final _formData = TextEditingController();
@@ -142,8 +145,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DetalhesDoParque(
-                              parque: estacionamentoSelecionado!)));
+                          builder: (context) => const TabBarDemo(initialIndex: 1)));
                 },
               ),
             ],
