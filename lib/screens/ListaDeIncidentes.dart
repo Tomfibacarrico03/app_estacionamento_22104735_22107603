@@ -48,7 +48,7 @@ class ListaIncidentesPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.warning),
-                  title: Text('Gravidade: ${(incidente.gravidade)}'),
+                  title: Text('${(incidente.gravidade)}'),
                   trailing: Icon(
                     Icons.circle,
                     color: getSeverityColor(incidente.gravidade),
