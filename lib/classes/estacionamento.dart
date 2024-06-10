@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 
 class Estacionamento {
    String id = 'P';
-   String imagem;
    String nome;
-   String endereco;
+   String horario;
    int? maximoOcupacao;
    int? atualOcupacao;
    String tipo;
@@ -19,9 +18,8 @@ class Estacionamento {
 
   Estacionamento(
       { required this.id ,
-        required this.imagem,
         required this.nome,
-        required this.endereco,
+        required this.horario,
         required this.maximoOcupacao,
         required this.atualOcupacao,
         required this.tipo,
@@ -69,7 +67,6 @@ class Estacionamento {
     if(ocupacaoAtual > ocupacaoMax){
       ocupacaoAtual = ocupacaoMax;
     }
-    print('Estacionamento fromMap: $map');
     return Estacionamento(
       nome: map['nome'] ?? 'Unnamed',
       id: map['id_parque'] ?? 'Unknown',
@@ -77,11 +74,10 @@ class Estacionamento {
       atualOcupacao: ocupacaoAtual,
       latitude: double.parse(map['latitude']),
       longitude: double.parse(map['longitude']),
-      tipo: map['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, tarifa: map['tarifa']?? 'Unknown', dataAtualizada: map['data_ocupacao'],
+      tipo: map['tipo'] ?? 'Unknown', horario: '_', distancia: 0, tarifa: map['tarifa']?? 'Unknown', dataAtualizada: map['data_ocupacao'],
     );
   }
    factory Estacionamento.fromDB(Map<String,dynamic> db){
-     print('Estacionamento fromDB: $db');
      return Estacionamento(
        id: db['id'] ?? 'Unknown',
        nome: db['nome'] ?? 'Unnamed',
@@ -89,7 +85,7 @@ class Estacionamento {
        atualOcupacao: db['ocupacao'] ?? 0,
        latitude: db['latitude'],
        longitude: db['longitude'] ,
-       tipo: db['tipo'] ?? 'Unknown', imagem: '_', endereco: '_', distancia: 0, tarifa: db['tarifa']?? 'Unknown', dataAtualizada: db['data_ocupacao'],
+       tipo: db['tipo'] ?? 'Unknown', horario: '_', distancia: 0, tarifa: db['tarifa']?? 'Unknown', dataAtualizada: db['data_ocupacao'],
      );
    }
 

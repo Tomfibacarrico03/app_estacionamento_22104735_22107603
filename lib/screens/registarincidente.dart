@@ -96,7 +96,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
   }
 
   void verificarCamposEPreencherIncidente() async {
-    if (estacionamentoSelecionado == null || descricao.isEmpty) {
+    if (estacionamentoSelecionado == null || descricao.isEmpty || _formData.text.isEmpty || _formHora.text.isEmpty) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -173,7 +173,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
       },
     );
 
-    if (pickedTime != null) {
+    if (pickedTime != null && (pickedTime.hour < TimeOfDay.now().hour || (pickedTime.hour == TimeOfDay.now().hour && pickedTime.minute <= TimeOfDay.now().minute))) {
       setState(() {
         selectedTime = pickedTime;
         _formHora.text = selectedTime.format(context);
@@ -186,7 +186,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
+      lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -297,6 +297,9 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                           borderSide: const BorderSide(
                               color: Colors.lightGreen, width: 3),
                         ),
+                        suffixIcon: estacionamentoSelecionado != null
+                            ? const Icon(Icons.check, color: Colors.green)
+                            : null,
                       ),
                       value: estacionamentoSelecionado,
                       hint: const Text("Escolha um estacionamento"),
@@ -329,6 +332,9 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                   ),
                   filled: true,
                   fillColor: Colors.transparent,
+                  suffixIcon: _formData.text.isNotEmpty
+                      ? const Icon(Icons.check, color: Colors.green)
+                      : null,
                 ),
                 readOnly: true,
                 onTap: () => _selectDate(context),
@@ -345,6 +351,9 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                   ),
                   filled: true,
                   fillColor: Colors.transparent,
+                  suffixIcon: _formHora.text.isNotEmpty
+                      ? const Icon(Icons.check, color: Colors.green)
+                      : null,
                 ),
                 readOnly: true,
                 onTap: () => _selectTime(context),
@@ -358,6 +367,9 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                     borderRadius: BorderRadius.circular(40.0),
                   ),
                   icon: const Icon(Icons.description),
+                  suffixIcon: descricao.isNotEmpty
+                      ? const Icon(Icons.check, color: Colors.green)
+                      : null,
                 ),
                 onChanged: (value) {
                   setState(() {

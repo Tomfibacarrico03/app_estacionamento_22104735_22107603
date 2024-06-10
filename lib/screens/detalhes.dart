@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../classes/estacionamento.dart';
 import '../classes/incidente.dart';
@@ -103,8 +104,15 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     const Image(image: AssetImage('assets/car.jpg')),
+                    const Text(
+                      'Horário',
+                      style: TextStyle(
+                          color: Color(0xFF00486A),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
                     Text(
-                      widget.parque.endereco,
+                      widget.parque.horario,
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -125,7 +133,7 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                           fontWeight: FontWeight.w600),
                     ),
                     const Text(
-                      'Preço',
+                      'Tarifa',
                       style: TextStyle(
                           color: Color(0xFF00486A),
                           fontSize: 20,
@@ -196,62 +204,65 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00486A),
-                    ),
-                    onPressed: () {
-                      // Volta para a tela principal
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                      // Abre a tela principal com o índice da aba desejada
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const TabBarDemo(initialIndex: 3, registarIncidenteParque: null), // Índice da aba "Registrar Incidente"
-                      ));
-                    },
-                    child: const Text(
-                      'Registrar Incidente',
-                      style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                    FutureBuilder<List<Incidente>>(
-                      future: _futureIncidentes,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return const Text('Erro ao carregar incidentes');
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const SizedBox.shrink(); // No incidents, return an empty box
-                        } else {
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF00486A),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ListaIncidentesPage(incidentes: snapshot.data!),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'Ver incidentes',
-                              style: TextStyle(
-                                color: Color(0xFFFFFFFF),
-                                fontWeight: FontWeight.w600,
+              const SizedBox(height: 10),
+              Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00486A),
+                        ),
+                        onPressed: () {
+                          // Volta para a tela principal
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+                          // Abre a tela principal com o índice da aba desejada
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => const TabBarDemo(initialIndex: 3, registarIncidenteParque: null), // Índice da aba "Registrar Incidente"
+                          ));
+                        },
+                        child: const Text(
+                          'Registrar Incidente',
+                          style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      FutureBuilder<List<Incidente>>(
+                        future: _futureIncidentes,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return const Text('Erro ao carregar incidentes');
+                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return const SizedBox.shrink(); // No incidents, return an empty box
+                          } else {
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF00486A),
                               ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                ],
-              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ListaIncidentesPage(incidentes: snapshot.data!),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Ver incidentes',
+                                style: TextStyle(
+                                  color: Color(0xFFFFFFFF),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  )
+              )
+,
             ],
           ),
         ),

@@ -115,7 +115,6 @@ class Parques extends State<ParquesPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            print("Error: ${snapshot.error}");
             return Center(
                 child: Text(_isConnected
                     ? 'Erro ao carregar os parques'
@@ -124,7 +123,6 @@ class Parques extends State<ParquesPage> {
             return const Center(child: Text('Nenhum parque encontrado'));
           } else {
             final parquesList = snapshot.data!;
-            print("Number of parques: ${parquesList.length}");
             return Scrollbar(
               thumbVisibility: true,
               thickness: 6.0,

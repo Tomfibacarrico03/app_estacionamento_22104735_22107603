@@ -15,7 +15,10 @@ class EstacionamentosRepository {
   Future<List<Estacionamento>> getEstacionamentos(controlGeo? geo) async {
     final response = await _client.get(
         url: 'https://emel.city-platform.com/opendata/parking/lots',
-        headers: {'accept': 'application/json', 'api_key': '93600bb4e7fee17750ae478c22182dda'});
+        headers: {
+          'accept': 'application/json',
+          'api_key': '93600bb4e7fee17750ae478c22182dda'
+        });
 
     if (response.statusCode == 200) {
       final responseJSON = jsonDecode(response.body);
@@ -23,12 +26,14 @@ class EstacionamentosRepository {
           .map((data) => Estacionamento.fromMap(data))
           .toList();
 
-      if (geo != null) {
-        print("in distance CALC");
-        await Future.wait(parques.map((estacionamento) async {
-          estacionamento.distancia = (await calculateDistance(geo.lat, geo.long, estacionamento.latitude, estacionamento.longitude)).toDouble();
-        }));
-      }
+      await Future.wait(parques.map((estacionamento) async {
+        if (geo != null) {
+          estacionamento.distancia = (await calculateDistance(geo.lat, geo.long,
+                  estacionamento.latitude, estacionamento.longitude))
+              .toDouble();
+        }
+        await getMoreInfo(estacionamento);
+      }));
 
       return parques;
     } else {
@@ -36,19 +41,40 @@ class EstacionamentosRepository {
     }
   }
 
-  Future<double> calculateDistance(double startLat, double startLng, double endLat, double endLng) async {
-    var url = Uri.parse('https://maps.googleapis.com/maps/api/distancematrix/json?destinations=$endLat,$endLng&origins=$startLat,$startLng&units=imperial&key=AIzaSyCDWKnqhk8QFdDYQtDv5thFpOr2xyEASQI');
+  Future<double> calculateDistance(
+      double startLat, double startLng, double endLat, double endLng) async {
+    var url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=$endLat,$endLng&origins=$startLat,$startLng&units=imperial&key=AIzaSyCDWKnqhk8QFdDYQtDv5thFpOr2xyEASQI');
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       if (jsonResponse['rows'][0]['elements'][0]['status'] == 'OK') {
-        double distanceInMeters = jsonResponse['rows'][0]['elements'][0]['distance']['value'].toDouble();
+        double distanceInMeters = jsonResponse['rows'][0]['elements'][0]
+                ['distance']['value']
+            .toDouble();
 
         return distanceInMeters / 1000.0;
       } else {
         return 0.0;
       }
+    } else {
+      throw Exception('Failed to reach Google API');
+    }
+  }
+
+  Future<void> getMoreInfo(Estacionamento estacionamento) async {
+    final response = await _client.get(
+        url: 'https://opendata.emel.pt/onstreetparking/zone/${estacionamento.id.split("P")[1]}',
+        headers: {
+          'accept': 'application/json',
+          'api_key': '93600bb4e7fee17750ae478c22182dda'
+        });
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      estacionamento.horario = jsonResponse["horario"];
+      estacionamento.tarifa = jsonResponse["tarifa"];
     } else {
       throw Exception('Failed to reach Google API');
     }

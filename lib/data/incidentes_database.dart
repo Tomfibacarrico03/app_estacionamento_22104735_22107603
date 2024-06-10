@@ -36,7 +36,6 @@ class IncidentesDatabase {
   }
 
   Future<void> insert(Incidente incidente) async {
-    print("INSERTING INCIDENTE");
     if (_database == null) {
       throw Exception("Database not initialized");
     }
@@ -51,7 +50,6 @@ class IncidentesDatabase {
       where: 'idParque = ?',
       whereArgs: [idParque],
     );
-    print(result);
     if (result.isNotEmpty) {
       return result.map((e) => Incidente.fromDB(e)).toList();
     } else {
