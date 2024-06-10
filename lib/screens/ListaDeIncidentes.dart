@@ -71,7 +71,7 @@ class ListaIncidentesPage extends StatelessWidget {
             70.0), // Aqui você pode definir a altura da AppBar
         child: Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF00486A), // A cor de fundo da AppBar
+            color: Color(0xFFFFFFFF), // A cor de fundo da AppBar
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(
                   20.0), // Defina o raio para os cantos inferiores
@@ -83,21 +83,12 @@ class ListaIncidentesPage extends StatelessWidget {
             elevation: 0, // Remove a sombra
             centerTitle: true,
             title: const Text(
-              'PARK4U',
+              'Incidentes do parque',
               style: TextStyle(
                 fontSize: 30,
-                color: Color(0xFFFFFFFF),
+                color: Color(0xFF00486A),
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Arial',
-                letterSpacing: 2.0, // Espaçamento entre as letras
-                shadows: [
-                  // Sombra para o texto
-                  Shadow(
-                    offset: Offset(2.0, 1.0),
-                    blurRadius: 6.0,
-                    color: Color(0xFF3ADF43),
-                  ),
-                ],
               ),
             ),
           ),
@@ -110,42 +101,7 @@ class ListaIncidentesPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 30,),
-            AppBar(
-              centerTitle: true, // Centraliza o título
-              automaticallyImplyLeading: false,
-              title: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                // Aumente o espaço vertical se necessário.
-                child: Container(
-                  height: 35,
-                  // Altura fixa
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                  // Espaço ao redor do texto
-                  decoration: BoxDecoration(
-                    color: Colors.white, // Cor de fundo do retângulo
-                    borderRadius:
-                    BorderRadius.circular(20), // Bordas arredondadas
-                    border: Border.all(
-                      color: Colors.lightGreen, // A cor das bordas
-                      width: 2.0, // A largura da borda
-                    ),
-                  ),
-                  child: const Text(
-                    'Incidentes do parque',
-                    style: TextStyle(
-                      color: Color(0xFF00486A), // Cor do texto
-                      fontSize: 25, // Tamanho do texto
-                    ),
-                  ),
-                ),
-              ),
-              backgroundColor:
-              Colors.white, // Torna o fundo da AppBar transparente
-              elevation: 0, // Remove a sombra abaixo da AppBar
-            ),
-            SizedBox(height: 30,),
+            const SizedBox(height: 30,),
             Expanded(
               child: ListView.builder(
                 itemCount: incidentes.length,
