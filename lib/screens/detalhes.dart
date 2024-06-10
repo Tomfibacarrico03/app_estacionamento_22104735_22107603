@@ -4,14 +4,35 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../classes/estacionamento.dart';
+import '../classes/incidente.dart';
+import '../data/incidentes_database.dart';
 import '../main.dart';
 import 'registarincidente.dart';
 import 'ListaDeIncidentes.dart';
 
-class DetalhesDoParque extends StatelessWidget {
+class DetalhesDoParque extends StatefulWidget {
   final Estacionamento parque;
 
   const DetalhesDoParque({Key? key, required this.parque}) : super(key: key);
+
+  @override
+  _DetalhesDoParqueState createState() => _DetalhesDoParqueState();
+}
+
+class _DetalhesDoParqueState extends State<DetalhesDoParque> {
+  late Future<List<Incidente>> _futureIncidentes;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureIncidentes = _fetchIncidentes();
+  }
+
+  Future<List<Incidente>> _fetchIncidentes() async {
+    final incidentesDatabase = IncidentesDatabase();
+    await incidentesDatabase.init();
+    return await incidentesDatabase.getIncidentesByParqueId(widget.parque.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,11 +113,11 @@ class DetalhesDoParque extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 10.0),
-                      child: Image.asset(parque.imagem, fit: BoxFit.fitWidth),
+                      child: Image.asset(widget.parque.imagem, fit: BoxFit.fitWidth),
                     ),
                     Center(
                       child: Text(
-                        parque.nome,
+                        widget.parque.nome,
                         style: const TextStyle(
                           color: Color(0xFF00486A),
                           fontSize: 20,
@@ -112,7 +133,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      parque.endereco,
+                      widget.parque.endereco,
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -126,7 +147,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '${parque.distancia.toStringAsFixed(2)} km',
+                      '${widget.parque.distancia.toStringAsFixed(2)} km',
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -140,7 +161,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      parque.tarifa,
+                      widget.parque.tarifa,
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -154,7 +175,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      parque.getOcupacao(),
+                      widget.parque.getOcupacao(),
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -168,7 +189,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      parque.tipo,
+                      widget.parque.tipo,
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -181,14 +202,26 @@ class DetalhesDoParque extends StatelessWidget {
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      parque.incidentes.length.toString(),
-                      style: const TextStyle(
-                          color: Color(0xff696969),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    FutureBuilder<List<Incidente>>(
+                      future: _futureIncidentes,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return const Text('Erro ao carregar incidentes');
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Text('Nenhum incidente registrado');
+                        } else {
+                          return Text(
+                            snapshot.data!.length.toString(),
+                            style: const TextStyle(
+                                color: Color(0xff696969),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          );
+                        }
+                      },
                     ),
-                    // ... outros detalhes
                   ],
                 ),
               ),
@@ -205,7 +238,7 @@ class DetalhesDoParque extends StatelessWidget {
                       Navigator.of(context).popUntil((route) => route.isFirst);
                       // Abre a tela principal com o índice da aba desejada
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => TabBarDemo(initialIndex: 3, registarIncidenteParque: null), // Índice da aba "Registrar Incidente"
+                        builder: (context) => const TabBarDemo(initialIndex: 3, registarIncidenteParque: null), // Índice da aba "Registrar Incidente"
                       ));
                     },
                     child: const Text(
@@ -213,15 +246,38 @@ class DetalhesDoParque extends StatelessWidget {
                       style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
                     ),
                   ),
-                  if (parque.incidentes.isNotEmpty)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00486A),
-                      ),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListaIncidentesPage(incidentes: parque.incidentes)));
+                    FutureBuilder<List<Incidente>>(
+                      future: _futureIncidentes,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return const Text('Erro ao carregar incidentes');
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const SizedBox.shrink(); // No incidents, return an empty box
+                        } else {
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF00486A),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ListaIncidentesPage(incidentes: snapshot.data!),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Ver incidentes',
+                              style: TextStyle(
+                                color: Color(0xFFFFFFFF),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          );
+                        }
                       },
-                      child: const Text('Ver incidentes', style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600)),
                     ),
                 ],
               ),
