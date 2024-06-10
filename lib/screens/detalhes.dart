@@ -103,14 +103,6 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     const Image(image: AssetImage('assets/car.jpg')),
-
-                    const Text(
-                      'Morada',
-                      style: TextStyle(
-                          color: Color(0xFF00486A),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
                     Text(
                       widget.parque.endereco,
                       style: const TextStyle(
