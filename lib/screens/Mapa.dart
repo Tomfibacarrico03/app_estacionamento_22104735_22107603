@@ -1,32 +1,33 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:app_estacionamento_22104735_22107603/geoLocalizacao/controlador.dart'; // Import location controller
-
 
 class Mapa extends StatelessWidget {
   const Mapa({super.key});
 
   @override
   Widget build(BuildContext context) {
-  final geo = Provider.of<controlGeo>(context); // Access location controller
-  return Scaffold(
-      body:
-      Stack(
+    final geo = Provider.of<controlGeo>(context); // Access location controller
+    return Scaffold(
+      body: Stack(
         children: <Widget>[
-         GoogleMap(initialCameraPosition: CameraPosition(
-           target: LatLng(geo.lat, geo.long),
-           zoom: 15,
-         ),
-           zoomControlsEnabled: true,
-           zoomGesturesEnabled: true,
-           mapType: MapType.normal,
-           myLocationEnabled: true,
-           myLocationButtonEnabled: true,
-           onMapCreated: geo.onMapCreated,
-           markers: geo.markersParques,
-         ),
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(geo.lat, geo.long),
+              zoom: 15,
+            ),
+            zoomControlsEnabled: true,
+            zoomGesturesEnabled: true,
+            mapType: MapType.normal,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            onMapCreated: (GoogleMapController gmc) {
+              geo.onMapCreated(gmc);
+              geo.loadMarkers(context); // Passa o contexto para a função loadMarkers
+            },
+            markers: geo.markersParques,
+          ),
           Positioned(
             top: 0,
             left: 0,
@@ -45,7 +46,6 @@ class Mapa extends StatelessWidget {
                       color: Colors.lightGreen, // A cor das bordas
                       width: 2.0, // A largura da borda
                     ),
-
                   ),
                   child: const Text(
                     'Mapa de Parques',
@@ -64,6 +64,4 @@ class Mapa extends StatelessWidget {
       ),
     );
   }
-
 }
-

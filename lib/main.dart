@@ -11,7 +11,6 @@ import 'repository/estacionamento_repository.dart';
 import 'http/http_client.dart';
 import 'geoLocalizacao/controlador.dart'; // Importação do controlador de geolocalização
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +52,6 @@ class _TabBarDemoState extends State<TabBarDemo> {
       builder: (_, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
-            navigatorKey: navigatorKey,
             home: DefaultTabController(
               length: 4, // Number of tabs
               initialIndex: widget.initialIndex, // Use the initial index here
