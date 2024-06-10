@@ -26,7 +26,10 @@ class controlGeo extends ChangeNotifier {
     final parquesDB = context.read<PARQUESDatabase>();
     final parquesRepo = context.read<EstacionamentosRepository>();
 
-    List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos(null);
+    // Ensure the position is updated before using lat and long
+    await getPosicao();
+
+    List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos(this);
 
     for (var parque in estacionamentos) {
       markersParques.add(
