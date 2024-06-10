@@ -5,8 +5,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart'; // Import Google 
 import 'package:provider/provider.dart'; // Import Provider
 import '../classes/estacionamento.dart';
 import 'package:app_estacionamento_22104735_22107603/geoLocalizacao/controlador.dart';
+import '../classes/incidente.dart';
 import '../data/parques_database.dart';
 import '../repository/estacionamento_repository.dart'; // Import location controller
+import '../data/incidentes_database.dart'; // Import incidentes database
 
 class DashBoard extends StatefulWidget {
   const DashBoard({super.key});
@@ -16,60 +18,50 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
-
   late final TextEditingController parque = TextEditingController();
   List<Estacionamento> filteredList = [];
   bool showSearchResults = false;
   Estacionamento? parkWithMostIncidents;
   String nome = "";
   String distancia = "";
+  int totalIncidents = 0;
 
   @override
   void initState() {
     super.initState();
-    findParkWithMostIncidents();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<controlGeo>(context, listen: false).getPosicao(); // Request location after widget loads
     });
     findParkMaisPerto();
+    getTotalIncidents();
   }
 
-
-  void findParkMaisPerto() async{
+  void findParkMaisPerto() async {
     final controlGeo geo = Provider.of<controlGeo>(context, listen: false); // Moved here to access context
     final parquesRepo = context.read<EstacionamentosRepository>();
     List<Estacionamento> listaDeParques = await parquesRepo.getEstacionamentos(geo);
 
-
     listaDeParques.sort((a, b) => a.distancia.compareTo(b.distancia));
-    nome = listaDeParques[0].nome;
-    distancia = listaDeParques[0].distancia.toStringAsFixed(1);
+    setState(() {
+      nome = listaDeParques[0].nome;
+      distancia = listaDeParques[0].distancia.toStringAsFixed(1);
+    });
   }
 
-  void findParkWithMostIncidents() async{
-    final parquesRepo = context.read<EstacionamentosRepository>();
-    List<Estacionamento>? listaDeParques = await parquesRepo.getEstacionamentos(null);
+  void getTotalIncidents() async {
+    final incidentesDatabase = IncidentesDatabase();
+    await incidentesDatabase.init();
+    List<Incidente> incidentes = await incidentesDatabase.getIncidentes();
 
-    if (listaDeParques.isEmpty) {
-      parkWithMostIncidents = null;
-    } else {
-      parkWithMostIncidents = listaDeParques.reduce((current, next) {
-        return (current.incidentes.length > next.incidentes.length)
-            ? current
-            : next;
+    if (incidentes.isNotEmpty) {
+      setState(() {
+        totalIncidents = incidentes.length;
       });
-      // Check if the highest incident count is 0
-      if (parkWithMostIncidents!.incidentes.isEmpty) {
-        parkWithMostIncidents = null;
-      }
     }
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     final geo = Provider.of<controlGeo>(context); // Access location controller
 
     return Scaffold(
@@ -100,28 +92,17 @@ class _DashBoardState extends State<DashBoard> {
                 elevation: 0,
               ),
               const SizedBox(height: 10),
-              if (parkWithMostIncidents != null)
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0), // Rounded corners
-                    side: const BorderSide(color: Colors.lightGreen, width: 2.0), // Border color and width
-                  ),
-                  child: ListTile(
-                    tileColor: Colors.white, // Background color of the ListTile
-                    leading: const Icon(Icons.warning,
-                        color: Color(0xFF00486A), // Text color
-                        size: 40), // Leading icon with a warning sign
-                    title: Text(
-                      '${parkWithMostIncidents!.nome} é o parque com mais incidentes',
-                      style: const TextStyle(
-                        color: Color(0xFF00486A), // Text color
-                        fontWeight: FontWeight.bold, // Bold text for emphasis
-                        fontSize: 16.5, // Font size for title
-                      ),
-                    ),
-                  ),
+              if (totalIncidents > 0)
+                Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text('Total de incidentes: $totalIncidents',
+                    style: TextStyle(
+                      color: Color(0xFF00486A), // Text color
+                      fontWeight: FontWeight.bold, // Bold text for emphasis
+                      fontSize: 16.5, // Font size for title
+                    ),),
                 ),
-              if (parkWithMostIncidents == null)
+              if (totalIncidents == 0)
                 const Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Text("Sem registo de incidentes 🥳",
@@ -132,14 +113,12 @@ class _DashBoardState extends State<DashBoard> {
                     ),),
                 ),
               const SizedBox(height: 10),
-
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0), // Rounded corners
                   side: const BorderSide(color: Colors.lightGreen, width: 6.0), // Border color and width
                 ),
                 color : const Color(0xFF00486A),
-
                 child: ListTile(
                   titleAlignment: ListTileTitleAlignment.center,
                   title: const Text('Parque mais perto: ',
@@ -160,7 +139,6 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               const SizedBox(height: 10),
-
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10), // Rounded corners
@@ -178,13 +156,12 @@ class _DashBoardState extends State<DashBoard> {
                         title: Text('Veja os parques mais próximos', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF00486A))),
                       ),
                     ),
-
                     Container(
                       alignment: Alignment.center,
                       height: 275.0,
                       child: GoogleMap(initialCameraPosition: CameraPosition(
                         target: LatLng(geo.lat, geo.long),
-                        zoom: 14 ,
+                        zoom: 14,
                       ),
                         zoomControlsEnabled: true,
                         zoomGesturesEnabled: true,

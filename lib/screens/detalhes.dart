@@ -189,7 +189,7 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                         } else if (snapshot.hasError) {
                           return const Text('Erro ao carregar incidentes');
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Text('Nenhum incidente registrado');
+                          return const Text('Nenhum incidente registado');
                         } else {
                           return Text(
                             snapshot.data!.length.toString(),
