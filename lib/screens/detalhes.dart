@@ -215,23 +215,6 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00486A),
-                    ),
-                    onPressed: () {
-                      // Volta para a tela principal
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                      // Abre a tela principal com o índice da aba desejada
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => TabBarDemo(initialIndex: 3, registarIncidenteParque: null), // Índice da aba "Registrar Incidente"
-                      ));
-                    },
-                    child: const Text(
-                      'Registrar Incidente',
-                      style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
-                    ),
-                  ),
                   FutureBuilder<List<Incidente>>(
                     future: incidentesFuture,
                     builder: (context, snapshot) {

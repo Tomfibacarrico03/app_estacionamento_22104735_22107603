@@ -63,8 +63,7 @@ class _TabBarDemoState extends State<TabBarDemo> {
                       70.0), // Set the height of the AppBar
                   child: Container(
                     decoration: const BoxDecoration(
-                      color:
-                          Color(0xFF00486A), // Background color of the AppBar
+                      color: Color(0xFF00486A), // Background color of the AppBar
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(
                             20.0), // Radius for bottom left corner
@@ -73,7 +72,7 @@ class _TabBarDemoState extends State<TabBarDemo> {
                     ),
                     child: AppBar(
                       backgroundColor:
-                          Colors.transparent, // Make the AppBar transparent
+                      Colors.transparent, // Make the AppBar transparent
                       elevation: 0, // Remove the shadow
                       centerTitle: true,
                       title: const Text(
@@ -108,8 +107,7 @@ class _TabBarDemoState extends State<TabBarDemo> {
                 bottomNavigationBar: const ClipRRect(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20), // Radius for top left corner
-                    topRight:
-                        Radius.circular(20), // Radius for top right corner
+                    topRight: Radius.circular(20), // Radius for top right corner
                   ),
                   child: SizedBox(
                     height: 90,
@@ -133,7 +131,7 @@ class _TabBarDemoState extends State<TabBarDemo> {
                         indicatorSize: TabBarIndicatorSize.label,
                         indicatorColor: Colors.blueGrey,
                         labelStyle:
-                            TextStyle(fontSize: 17), // Increase text size
+                        TextStyle(fontSize: 17), // Increase text size
                         unselectedLabelStyle: TextStyle(fontSize: 14),
                       ),
                     ),
