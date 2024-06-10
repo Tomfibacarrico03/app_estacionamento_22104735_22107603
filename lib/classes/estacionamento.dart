@@ -35,6 +35,7 @@ class Estacionamento {
 
 
   bool addIncidente(Incidente incidente) {
+
     try {
       incidentes.add(incidente);
       return true;
