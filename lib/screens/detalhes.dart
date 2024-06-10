@@ -41,7 +41,7 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
         preferredSize: const Size.fromHeight(70.0), // Aqui você pode definir a altura da AppBar
         child: Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF00486A), // A cor de fundo da AppBar
+            color: Color(0xFFFFFFFF),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20.0), // Defina o raio para os cantos inferiores
               bottomRight: Radius.circular(20.0),
@@ -52,21 +52,12 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
             elevation: 0, // Remove a sombra
             centerTitle: true,
             title: const Text(
-              'PARK4U',
+              'Detalhes do Parque',
               style: TextStyle(
                 fontSize: 30,
-                color: Color(0xFFFFFFFF),
+                color: Color(0xFF00486A),
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Arial',
-                letterSpacing: 2.0, // Espaçamento entre as letras
-                shadows: [
-                  // Sombra para o texto
-                  Shadow(
-                    offset: Offset(2.0, 1.0),
-                    blurRadius: 6.0,
-                    color: Color(0xFF3ADF43),
-                  ),
-                ],
               ),
             ),
           ),
@@ -87,16 +78,16 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                     height: 35,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                     decoration: BoxDecoration(
-                      color: Colors.white, // Cor de fundo do retângulo
+                        color: const Color(0xFFFFFFFF), // Cor de fundo do retângulo
                       borderRadius: BorderRadius.circular(20), // Bordas arredondadas
                       border: Border.all(
                         color: Colors.lightGreen, // A cor das bordas
                         width: 2.0, // A largura da borda
                       ),
                     ),
-                    child: const Text(
-                      'Detalhes do parque',
-                      style: TextStyle(
+                    child: Text(
+                      widget.parque.nome,
+                      style: const TextStyle(
                         color: Color(0xFF00486A), // Cor do texto
                         fontSize: 25, // Tamanho do texto
                       ),
@@ -111,16 +102,6 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Center(
-                      child: Text(
-                        widget.parque.nome,
-                        style: const TextStyle(
-                          color: Color(0xFF00486A),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                     const Image(image: AssetImage('assets/car.jpg')),
 
                     const Text(
