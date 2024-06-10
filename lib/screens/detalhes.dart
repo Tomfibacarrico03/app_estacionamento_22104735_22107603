@@ -5,14 +5,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import '../classes/estacionamento.dart';
+import '../classes/incidente.dart';
+import '../data/incidentes_database.dart';
 import '../main.dart';
 import 'registarincidente.dart';
 import 'ListaDeIncidentes.dart';
 
-class DetalhesDoParque extends StatelessWidget {
+class DetalhesDoParque extends StatefulWidget {
   final Estacionamento parque;
 
   const DetalhesDoParque({Key? key, required this.parque}) : super(key: key);
+
+  @override
+  _DetalhesDoParqueState createState() => _DetalhesDoParqueState();
+}
+
+class _DetalhesDoParqueState extends State<DetalhesDoParque> {
+  late Future<List<Incidente>> incidentesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    incidentesFuture = _loadIncidentes();
+  }
+  Future<List<Incidente>> _loadIncidentes() async {
+    try {
+      // Initialize the database
+      final incidentesDatabase = IncidentesDatabase();
+      await incidentesDatabase.init();
+      // Fetch the incidents for the given parque
+      print("PARQUE ID: "+widget.parque.id);
+      return await incidentesDatabase.getIncidentesByParqueId(widget.parque.id);
+    } catch (e, stackTrace) {
+      print('Error loading incidents: $e');
+      print('Stack trace: $stackTrace');
+      rethrow;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +96,7 @@ class DetalhesDoParque extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          parque.nome,
+                          widget.parque.nome,
                           style: const TextStyle(
                             color: Color(0xFF00486A),
                             fontSize: 30,
@@ -79,7 +108,7 @@ class DetalhesDoParque extends StatelessWidget {
 
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 10.0),
-                      child: Image.asset(parque.imagem, fit: BoxFit.fitWidth),
+                      child: Image.asset(widget.parque.imagem, fit: BoxFit.fitWidth),
                     ),
                     const Text(
                       'Morada',
@@ -89,7 +118,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      parque.endereco,
+                      widget.parque.endereco,
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -103,7 +132,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '${parque.distancia.toStringAsFixed(2)} km',
+                      '${widget.parque.distancia.toStringAsFixed(2)} km',
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -117,7 +146,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      parque.tarifa,
+                      widget.parque.tarifa,
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -131,7 +160,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      parque.getOcupacao(),
+                      widget.parque.getOcupacao(),
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -145,7 +174,7 @@ class DetalhesDoParque extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      parque.tipo,
+                      widget.parque.tipo,
                       style: const TextStyle(
                           color: Color(0xff696969),
                           fontSize: 16,
@@ -158,12 +187,25 @@ class DetalhesDoParque extends StatelessWidget {
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      parque.incidentes.length.toString(),
-                      style: const TextStyle(
-                          color: Color(0xff696969),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    FutureBuilder<List<Incidente>>(
+                      future: incidentesFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return const Center(child: Text('Erro ao carregar os incidentes'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(child: Text('Nenhum incidente encontrado'));
+                        } else {
+                          return Text(
+                            snapshot.data!.length.toString(),
+                            style: const TextStyle(
+                                color: Color(0xff696969),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          );
+                        }
+                      },
                     ),
                     // ... outros detalhes
                   ],
@@ -190,16 +232,36 @@ class DetalhesDoParque extends StatelessWidget {
                       style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
                     ),
                   ),
-                  if (parque.incidentes.isNotEmpty)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00486A),
-                      ),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListaIncidentesPage(incidentes: parque.incidentes)));
-                      },
-                      child: const Text('Ver incidentes', style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600)),
-                    ),
+                  FutureBuilder<List<Incidente>>(
+                    future: incidentesFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting ||
+                          !snapshot.hasData ||
+                          snapshot.data!.isEmpty) {
+                        return Container();
+                      } else {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00486A),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ListaIncidentesPage(
+                                  incidentes: snapshot.data!,
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Ver incidentes',
+                            style: TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
             ],
@@ -209,3 +271,4 @@ class DetalhesDoParque extends StatelessWidget {
     );
   }
 }
+

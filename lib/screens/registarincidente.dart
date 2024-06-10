@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../classes/incidente.dart';
+import '../data/incidentes_database.dart';
 import '../repository/estacionamento_repository.dart';
 import '../classes/estacionamento.dart';
 import 'detalhes.dart';
@@ -37,11 +38,18 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
   Future<List<Estacionamento>>? listaDeParques;
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isConnected = true;
+  late IncidentesDatabase incidentesDatabase;
 
   @override
   void initState() {
     super.initState();
-    _initConnectivity();
+    incidentesDatabase = IncidentesDatabase();
+    _initDatabaseAndConnectivity();
+  }
+
+  Future<void> _initDatabaseAndConnectivity() async {
+    await incidentesDatabase.init();
+    await _initConnectivity();
   }
 
   Future<void> _initConnectivity() async {
@@ -64,16 +72,16 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
 
     if (!_isConnected) {
       List<Estacionamento> localEstacionamentos =
-          await parquesDB.getEstacionamentos();
+      await parquesDB.getEstacionamentos();
       return localEstacionamentos;
     }
 
     List<Estacionamento> estacionamentos =
-        await parquesRepo.getEstacionamentos(null);
+    await parquesRepo.getEstacionamentos(null);
 
     for (var estacionamento in estacionamentos) {
       var existingEstacionamento =
-          await parquesDB.getEstacionamentoById(estacionamento.id);
+      await parquesDB.getEstacionamentoById(estacionamento.id);
       if (existingEstacionamento != null) {
         await parquesDB.update(estacionamento);
       } else {
@@ -84,7 +92,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
     return estacionamentos;
   }
 
-  void verificarCamposEPreencherIncidente() {
+  void verificarCamposEPreencherIncidente() async {
     if (estacionamentoSelecionado == null || descricao.isEmpty) {
       showDialog(
         context: context,
@@ -105,13 +113,21 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
         },
       );
     } else {
-      estacionamentoSelecionado!.addIncidente(Incidente(
+      var incidente = Incidente(
+        id: DateTime.now().millisecondsSinceEpoch.toString(), // Generate unique ID
+        estacionamentoId: estacionamentoSelecionado!.id,
         data: selectedDate,
         hora: selectedTime,
         descricao: descricao,
-        gravidade:
-            Gravidade.values[severity.toInt() - 1], // Ajusta gravidade aqui
-      ));
+        gravidade: Gravidade.values[severity.toInt() - 1],
+      );
+
+      // Add incidente to the Estacionamento instance
+      estacionamentoSelecionado!.addIncidente(incidente);
+
+      // Save incidente to the database
+      await incidentesDatabase.insert(incidente);
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -147,8 +163,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
             primaryColor: const Color(0xFF00486A),
             hintColor: const Color(0xFF00486A),
             colorScheme: const ColorScheme.light(primary: Color(0xFF00486A)),
-            buttonTheme:
-                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
             dialogBackgroundColor: Colors.white,
           ),
           child: child!,
@@ -156,13 +171,9 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
       },
     );
 
-    if (pickedTime != null &&
-            (pickedTime.hour < TimeOfDay.now().hour ||
-                (pickedTime.hour == TimeOfDay.now().hour &&
-                    pickedTime.minute <= TimeOfDay.now().minute)) ||
-        selectedDate.day < DateTime.now().day) {
+    if (pickedTime != null) {
       setState(() {
-        selectedTime = pickedTime!;
+        selectedTime = pickedTime;
         _formHora.text = selectedTime.format(context);
       });
     }
@@ -180,8 +191,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
             primaryColor: const Color(0xFF00486A),
             hintColor: const Color(0xFF00486A),
             colorScheme: const ColorScheme.light(primary: Color(0xFF00486A)),
-            buttonTheme:
-                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
             dialogBackgroundColor: Colors.white,
           ),
           child: child!,
@@ -189,9 +199,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
       },
     );
 
-    if (pickedDate != null &&
-        (pickedDate.isBefore(DateTime.now()) ||
-            pickedDate.isAtSameMomentAs(DateTime.now()))) {
+    if (pickedDate != null) {
       setState(() {
         selectedDate = pickedDate;
         _formData.text = DateFormat('dd/MM/yyyy').format(selectedDate);
@@ -280,8 +288,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                         label: const Text("Parque"),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(40),
-                          borderSide:
-                              const BorderSide(color: Colors.black, width: 2),
+                          borderSide: const BorderSide(color: Colors.black, width: 2),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(40),
@@ -299,11 +306,11 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                       items: snapshot.data!
                           .map<DropdownMenuItem<Estacionamento>>(
                               (Estacionamento estacionamento) {
-                        return DropdownMenuItem<Estacionamento>(
-                          value: estacionamento,
-                          child: Text(estacionamento.nome),
-                        );
-                      }).toList(),
+                            return DropdownMenuItem<Estacionamento>(
+                              value: estacionamento,
+                              child: Text(estacionamento.nome),
+                            );
+                          }).toList(),
                     );
                   }
                 },
@@ -380,10 +387,10 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                   children: values
                       .map(
                         (e) => Text(
-                          e.toString(),
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      )
+                      e.toString(),
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  )
                       .toList(),
                 ),
               ),
