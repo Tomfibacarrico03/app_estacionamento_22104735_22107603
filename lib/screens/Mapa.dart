@@ -25,6 +25,7 @@ class Mapa extends StatelessWidget {
             mapType: MapType.normal,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
+            trafficEnabled: true,
             onMapCreated: (GoogleMapController gmc) {
               geo.onMapCreated(gmc);
               geo.loadMarkers(context); // Passa o contexto para a função loadMarkers
