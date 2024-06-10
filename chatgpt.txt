@@ -1,0 +1,179 @@
+Interação com o ChatGPT
+
+Requisito: Implementar a persistência de dados utilizando a biblioteca Sqflite
+
+--------------------------
+
+Humano: Como posso implementar a persistência de dados em Flutter utilizando a biblioteca Sqflite para armazenar informações de estacionamento?
+
+--------------------------
+
+ChatGPT: Claro! Aqui está um exemplo básico de como podes usar a biblioteca Sqflite para persistir dados em Flutter, especificamente para um sistema de estacionamento:
+
+dart
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+import '../classes/estacionamento.dart';
+
+class PARQUESDatabase {
+  Database? _database;
+
+  Future<void> init() async {
+    _database = await openDatabase(
+      join(await getDatabasesPath(), 'parques.db'),
+      onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE estacionamento(
+            id TEXT PRIMARY KEY,
+            nome TEXT ,
+            capacidade_max INTEGER NOT NULL,
+            ocupacao INTEGER NOT NULL,
+            tipo TEXT,
+            distancia DECIMAL,
+            tarifa TEXT,
+            latitude DECIMAL,
+            longitude DECIMAL,
+            data_ocupacao TEXT
+          )
+        ''');
+      },
+      version: 1,
+    );
+  }
+
+  Future<List<Estacionamento>> getEstacionamentos() async {
+    if (_database == null) {
+      throw Exception("Esqueceu-se de inicializar a base de dados");
+    }
+    List<Map<String, dynamic>> result = await _database!.query('estacionamento');
+
+    return result.map((e) => Estacionamento.fromDB(e)).toList();
+  }
+
+  Future<void> insert(Estacionamento estacionamento) async {
+    if (_database == null) {
+      throw Exception("Esqueceu-se de inicializar a base de dados");
+    }
+    await _database!.insert('estacionamento', estacionamento.toDb());
+  }
+
+  Future<Estacionamento?> getEstacionamentoById(String id) async {
+    if (_database == null) {
+      throw Exception("Esqueceu-se de inicializar a base de dados");
+    }
+    List<Map<String, dynamic>> result = await _database!.query(
+      'estacionamento',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (result.isNotEmpty) {
+      return Estacionamento.fromDB(result.first);
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> update(Estacionamento estacionamento) async {
+    if (_database == null) {
+      throw Exception("Esqueceu-se de inicializar a base de dados");
+    }
+    await _database!.update(
+      'estacionamento',
+      estacionamento.toDb(),
+      where: 'id = ?',
+      whereArgs: [estacionamento.id],
+    );
+  }
+}
+
+--------------------------
+
+Humano: Podes fornecer uma versão alternativa que use menos código repetitivo e melhor manuseio de erros?
+
+--------------------------
+
+ChatGPT: Claro! Aqui está uma versão que encapsula a verificação do banco de dados inicializado e melhora o manuseio de erros:
+
+dart
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+import '../classes/estacionamento.dart';
+
+class PARQUESDatabase {
+  Database? _database;
+
+  Future<void> init() async {
+    _database = await openDatabase(
+      join(await getDatabasesPath(), 'parques.db'),
+      onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE estacionamento(
+            id TEXT PRIMARY KEY,
+            nome TEXT,
+            capacidade_max INTEGER NOT NULL,
+            ocupacao INTEGER NOT NULL,
+            tipo TEXT,
+            distancia DECIMAL,
+            tarifa TEXT,
+            latitude DECIMAL,
+            longitude DECIMAL,
+            data_ocupacao TEXT
+          )
+        ''');
+      },
+      version: 1,
+    );
+  }
+
+  Future<Database> _getDatabase() async {
+    if (_database == null) {
+      throw Exception("Base de dados não inicializada");
+    }
+    return _database!;
+  }
+
+  Future<List<Estacionamento>> getEstacionamentos() async {
+    final db = await _getDatabase();
+    List<Map<String, dynamic>> result = await db.query('estacionamento');
+    return result.map((e) => Estacionamento.fromDB(e)).toList();
+  }
+
+  Future<void> insert(Estacionamento estacionamento) async {
+    final db = await _getDatabase();
+    await db.insert('estacionamento', estacionamento.toDb());
+  }
+
+  Future<Estacionamento?> getEstacionamentoById(String id) async {
+    final db = await _getDatabase();
+    List<Map<String, dynamic>> result = await db.query(
+      'estacionamento',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (result.isNotEmpty) {
+      return Estacionamento.fromDB(result.first);
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> update(Estacionamento estacionamento) async {
+    final db = await _getDatabase();
+    await db.update(
+      'estacionamento',
+      estacionamento.toDb(),
+      where: 'id = ?',
+      whereArgs: [estacionamento.id],
+    );
+  }
+}
+
+--------------------------
+
+Conclusão do Grupo:
+
+Optámos pela versão alternativa fornecida pelo ChatGPT por diversas razões. Primeiramente, esta versão encapsula a verificação da inicialização da base de dados, garantindo que a mesma está corretamente configurada antes de qualquer operação. Além disso, esta abordagem melhora o manuseio de erros, tornando o código mais fácil de manter. A função _getDatabase simplifica a repetição de código, assegurando que o acesso à base de dados é gerido de forma centralizada. Esta abordagem reduz a probabilidade de erros e facilita futuras manutenções e expansões do código.

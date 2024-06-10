@@ -111,10 +111,6 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 10.0),
-                      child: Image.asset(widget.parque.imagem, fit: BoxFit.fitWidth),
-                    ),
                     Center(
                       child: Text(
                         widget.parque.nome,
@@ -125,6 +121,8 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                         ),
                       ),
                     ),
+                    const Image(image: AssetImage('assets/car.jpg')),
+
                     const Text(
                       'Morada',
                       style: TextStyle(
