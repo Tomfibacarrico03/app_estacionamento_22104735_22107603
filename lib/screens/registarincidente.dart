@@ -287,7 +287,12 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                     return DropdownButtonFormField<Estacionamento>(
                       icon: const Icon(Icons.keyboard_arrow_down_rounded),
                       decoration: InputDecoration(
-                        label: const Text("Parque"),
+                        label: Row(
+                          children: const [
+                            Text("Parque"),
+                            Text("*", style: TextStyle(color: Colors.red)),
+                          ],
+                        ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(40),
                           borderSide: const BorderSide(color: Colors.black, width: 2),
@@ -299,7 +304,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                         ),
                         suffixIcon: estacionamentoSelecionado != null
                             ? const Icon(Icons.check, color: Colors.green)
-                            : null,
+                            : const Icon(Icons.error, color: Colors.red),
                       ),
                       value: estacionamentoSelecionado,
                       hint: const Text("Escolha um estacionamento"),
@@ -324,7 +329,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
               TextFormField(
                 controller: _formData,
                 decoration: InputDecoration(
-                  labelText: 'Data',
+                  labelText: 'Data *',
                   hintText: 'Selecione a data do incidente',
                   icon: const Icon(Icons.calendar_today),
                   border: OutlineInputBorder(
@@ -334,7 +339,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                   fillColor: Colors.transparent,
                   suffixIcon: _formData.text.isNotEmpty
                       ? const Icon(Icons.check, color: Colors.green)
-                      : null,
+                      : const Icon(Icons.error, color: Colors.red),
                 ),
                 readOnly: true,
                 onTap: () => _selectDate(context),
@@ -343,7 +348,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
               TextFormField(
                 controller: _formHora,
                 decoration: InputDecoration(
-                  labelText: 'Hora',
+                  labelText: 'Hora *',
                   hintText: 'Selecione a hora do incidente',
                   icon: const Icon(Icons.access_time),
                   border: OutlineInputBorder(
@@ -353,7 +358,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                   fillColor: Colors.transparent,
                   suffixIcon: _formHora.text.isNotEmpty
                       ? const Icon(Icons.check, color: Colors.green)
-                      : null,
+                      : const Icon(Icons.error, color: Colors.red),
                 ),
                 readOnly: true,
                 onTap: () => _selectTime(context),
@@ -362,6 +367,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
               TextFormField(
                 controller: _formDescricao,
                 decoration: InputDecoration(
+                  labelText: 'Descrição *',
                   hintText: "Descrição",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(40.0),
@@ -369,7 +375,7 @@ class _FormIncidenteState extends State<RegistarIncidentes> {
                   icon: const Icon(Icons.description),
                   suffixIcon: descricao.isNotEmpty
                       ? const Icon(Icons.check, color: Colors.green)
-                      : null,
+                      : const Icon(Icons.error, color: Colors.red),
                 ),
                 onChanged: (value) {
                   setState(() {
