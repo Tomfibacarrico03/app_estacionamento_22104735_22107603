@@ -25,6 +25,7 @@ class Mapa extends StatelessWidget {
            myLocationEnabled: true,
            myLocationButtonEnabled: true,
            onMapCreated: geo.onMapCreated,
+           markers: geo.markersParques,
          ),
           Positioned(
             top: 0,

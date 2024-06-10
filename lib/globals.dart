@@ -3,3 +3,4 @@ import 'package:app_estacionamento_22104735_22107603/repository/estacionamento_r
 import 'classes/estacionamento.dart';
 
 List<Estacionamento> listaDeParques = [];
+late Estacionamento ParkMaisPerto ;

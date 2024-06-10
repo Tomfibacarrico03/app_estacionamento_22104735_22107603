@@ -9,15 +9,17 @@ import '../geoLocalizacao/controlador.dart';
 import 'detalhes.dart';
 import 'package:app_estacionamento_22104735_22107603/repository/estacionamento_repository.dart';
 
+
 class ParquesPage extends StatefulWidget {
   @override
   Parques createState() => Parques();
 }
 
 class Parques extends State<ParquesPage> {
-  Future<List<Estacionamento>>? listaDeParques;
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isConnected = true;
+  Future<List<Estacionamento>>? listaDeParques;
+
 
   @override
   void initState() {
@@ -33,12 +35,15 @@ class Parques extends State<ParquesPage> {
     });
   }
 
+
   Future<void> _checkConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     setState(() {
       _isConnected = connectivityResult != ConnectivityResult.none;
     });
   }
+
+
 
   Future<List<Estacionamento>> _getEstacionamentos(controlGeo geo) async {
     final parquesDB = context.read<PARQUESDatabase>();
@@ -169,6 +174,8 @@ class Parques extends State<ParquesPage> {
       ),
     );
   }
+
+
 
   Color getColorForStatus(Estacionamento parque) {
     if (parque.atualOcupacao == parque.maximoOcupacao) {

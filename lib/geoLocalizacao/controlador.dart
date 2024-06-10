@@ -1,12 +1,22 @@
+
+import 'package:app_estacionamento_22104735_22107603/classes/estacionamento.dart';
+import 'package:app_estacionamento_22104735_22107603/main.dart';
+import 'package:app_estacionamento_22104735_22107603/screens/detalhes.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import '../data/parques_database.dart';
+import '../repository/estacionamento_repository.dart';
+
+
 
 class controlGeo extends ChangeNotifier {
   double lat = 0.0;
   double long = 0.0;
   String erro = ' ';
   late GoogleMapController _mapsController;
+  Set<Marker> markersParques = <Marker>{};
 
 
   //localizacao() {
@@ -19,6 +29,35 @@ class controlGeo extends ChangeNotifier {
     _mapsController = gmc;
     getPosicao();
 
+    final currentContext = navigatorKey.currentContext;
+    if (currentContext != null) {
+      loadMarkers(currentContext);
+    } else {
+      // Handle the null context case if necessary
+      print('currentContext is null');
+    }
+  }
+
+  loadMarkers(BuildContext context) async {
+    final parquesDB = context.read<PARQUESDatabase>();
+    final parquesRepo = context.read<EstacionamentosRepository>();
+
+    List<Estacionamento> estacionamentos = await parquesRepo.getEstacionamentos(null);
+
+    for (var parque in estacionamentos)  {
+      markersParques.add(Marker(markerId:MarkerId(parque.id),
+        position: LatLng(parque.latitude, parque.longitude),
+        icon: await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(),
+        'assets/location.png'
+        ),
+        onTap: () => {
+        showModalBottomSheet(context: context, builder: (context) => DetalhesDoParque(parque: parque))
+        }
+      ),
+      );
+    }
+    notifyListeners();
   }
 
   getPosicao() async {
