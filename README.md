@@ -91,8 +91,7 @@ A arquitetura da aplicação de estacionamentos segue boas práticas de desenvol
 
 
 Link para o vídeo do youtube: 
-https://youtu.be/EgBmfXLPEE0
-
+https://youtu.be/EzqeMRFowXE
 
 Classes de Lógica de Negócio:
 
