@@ -96,7 +96,7 @@ class _DetalhesDoParqueState extends State<DetalhesDoParque> {
                           ),
                         ),
                         child: Text(
-                          parque.nome,
+                          widget.parque.nome,
                           style: const TextStyle(
                             color: Color(0xFF00486A),
                             fontSize: 30,
