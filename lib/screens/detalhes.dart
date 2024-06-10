@@ -90,10 +90,6 @@ class DetalhesDoParque extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 10.0),
-                      child: Image.asset(parque.imagem, fit: BoxFit.fitWidth),
-                    ),
                     Center(
                       child: Text(
                         parque.nome,
@@ -104,6 +100,8 @@ class DetalhesDoParque extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const Image(image: AssetImage('assets/car.jpg')),
+
                     const Text(
                       'Morada',
                       style: TextStyle(
