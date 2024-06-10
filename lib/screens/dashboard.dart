@@ -2,11 +2,9 @@ import 'package:app_estacionamento_22104735_22107603/screens/detalhes.dart';
 import 'package:app_estacionamento_22104735_22107603/screens/parques.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart'; // Import Google Maps package
-import 'package:app_estacionamento_22104735_22107603/globals.dart';
 import 'package:provider/provider.dart'; // Import Provider
 import '../classes/estacionamento.dart';
 import 'package:app_estacionamento_22104735_22107603/geoLocalizacao/controlador.dart';
-
 import '../data/parques_database.dart';
 import '../repository/estacionamento_repository.dart'; // Import location controller
 
@@ -34,7 +32,6 @@ class _DashBoardState extends State<DashBoard> {
       Provider.of<controlGeo>(context, listen: false).getPosicao(); // Request location after widget loads
     });
     findParkMaisPerto();
-
   }
 
 
