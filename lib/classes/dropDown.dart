@@ -31,7 +31,7 @@ class _DropdownSelectorState extends State<DropdownSelector> {
           selectedEstacionamento = newValue;
         });
       },
-      items: listaDeParques.map<DropdownMenuItem<String>>((Estacionamento estacionamento) {
+      items: listaDeParques?.map<DropdownMenuItem<String>>((Estacionamento estacionamento) {
         return DropdownMenuItem<String>(
           value: estacionamento.nome, // Supondo que cada estacionamento tenha um atributo nome
           child: Text(estacionamento.nome),

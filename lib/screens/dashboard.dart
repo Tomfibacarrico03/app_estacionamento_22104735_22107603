@@ -1,10 +1,14 @@
 import 'package:app_estacionamento_22104735_22107603/screens/detalhes.dart';
+import 'package:app_estacionamento_22104735_22107603/screens/parques.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart'; // Import Google Maps package
 import 'package:app_estacionamento_22104735_22107603/globals.dart';
 import 'package:provider/provider.dart'; // Import Provider
 import '../classes/estacionamento.dart';
-import 'package:app_estacionamento_22104735_22107603/geoLocalizacao/controlador.dart'; // Import location controller
+import 'package:app_estacionamento_22104735_22107603/geoLocalizacao/controlador.dart';
+
+import '../data/parques_database.dart';
+import '../repository/estacionamento_repository.dart'; // Import location controller
 
 class DashBoard extends StatefulWidget {
   const DashBoard({super.key});
@@ -15,11 +19,12 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
 
-  final TextEditingController parque = TextEditingController();
+  late final TextEditingController parque = TextEditingController();
   List<Estacionamento> filteredList = [];
   bool showSearchResults = false;
   Estacionamento? parkWithMostIncidents;
-  List<Estacionamento> listaDeParques = [];
+  String nome = "";
+  String distancia = "";
 
   @override
   void initState() {
@@ -28,23 +33,26 @@ class _DashBoardState extends State<DashBoard> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<controlGeo>(context, listen: false).getPosicao(); // Request location after widget loads
     });
+    findParkMaisPerto();
+
   }
 
-  void filterSearch(String query) {
-    if (query.isEmpty) {
-      filteredList = [];
-      showSearchResults = false;
-    } else {
-      filteredList = listaDeParques
-          .where(
-              (park) => park.nome.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-      showSearchResults = true;
-    }
-    setState(() {});
+
+  void findParkMaisPerto() async{
+    final controlGeo geo = Provider.of<controlGeo>(context, listen: false); // Moved here to access context
+    final parquesRepo = context.read<EstacionamentosRepository>();
+    List<Estacionamento> listaDeParques = await parquesRepo.getEstacionamentos(geo);
+
+
+    listaDeParques.sort((a, b) => a.distancia.compareTo(b.distancia));
+    nome = listaDeParques[0].nome;
+    distancia = listaDeParques[0].distancia.toStringAsFixed(1);
   }
 
-  void findParkWithMostIncidents() {
+  void findParkWithMostIncidents() async{
+    final parquesRepo = context.read<EstacionamentosRepository>();
+    List<Estacionamento>? listaDeParques = await parquesRepo.getEstacionamentos(null);
+
     if (listaDeParques.isEmpty) {
       parkWithMostIncidents = null;
     } else {
@@ -63,6 +71,8 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
+
+
     final geo = Provider.of<controlGeo>(context); // Access location controller
 
     return Scaffold(
@@ -142,16 +152,9 @@ class _DashBoardState extends State<DashBoard> {
                       fontSize: 14, // Font size for title
                     ),
                   ),
-                  subtitle: listaDeParques.isNotEmpty
-                      ? Text('${listaDeParques[1].nome} -> ${listaDeParques[1].distancia} km',
+                  subtitle:
+                  Text('$nome -> $distancia km',
                     style: const TextStyle(
-                      color: Colors.white, // Text color
-                      fontWeight: FontWeight.bold, // Bold text for emphasis
-                      fontSize: 17, // Font size for title
-                    ),
-                  )
-                      : const Text('Nenhum parque encontrado',
-                    style: TextStyle(
                       color: Colors.white, // Text color
                       fontWeight: FontWeight.bold, // Bold text for emphasis
                       fontSize: 17, // Font size for title
@@ -182,18 +185,17 @@ class _DashBoardState extends State<DashBoard> {
                     Container(
                       alignment: Alignment.center,
                       height: 275.0,
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(geo.lat, geo.long), // Use actual coordinates from the provider
-                          zoom: 13.0,
-                        ),
-                        markers: {
-                          Marker(
-                            markerId: const MarkerId('current_location'),
-                            position: LatLng(geo.lat, geo.long),
-                            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-                          ),
-                        },
+                      child: GoogleMap(initialCameraPosition: CameraPosition(
+                        target: LatLng(geo.lat, geo.long),
+                        zoom: 14 ,
+                      ),
+                        zoomControlsEnabled: true,
+                        zoomGesturesEnabled: true,
+                        mapType: MapType.normal,
+                        myLocationEnabled: true,
+                        myLocationButtonEnabled: true,
+                        onMapCreated: geo.onMapCreated,
+                        markers: geo.markersParques,
                       ),
                     ),
                   ],

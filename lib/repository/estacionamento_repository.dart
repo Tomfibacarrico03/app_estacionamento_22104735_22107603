@@ -44,6 +44,7 @@ class EstacionamentosRepository {
       var jsonResponse = jsonDecode(response.body);
       if (jsonResponse['rows'][0]['elements'][0]['status'] == 'OK') {
         double distanceInMeters = jsonResponse['rows'][0]['elements'][0]['distance']['value'].toDouble();
+
         return distanceInMeters / 1000.0;
       } else {
         return 0.0;
